@@ -11,7 +11,10 @@ public class CheckPointManager : MonoBehaviour
         public GameObject[] checkpoints; 
     }
 
+    [Header("Levels Data")]
     public List<LevelCheckpoints> levels = new List<LevelCheckpoints>();
+    public List<GameObject> levelRoots = new List<GameObject>(); // 👈 Assign Level1, Level2, etc.
+
 
     public TextMeshProUGUI Current_CP;
     public TextMeshProUGUI Total_CP;
@@ -26,7 +29,35 @@ public class CheckPointManager : MonoBehaviour
 
     void Start()
     {
+        // Safety check
+        if (levels.Count == 0 || levelRoots.Count == 0)
+        {
+            Debug.LogError("Levels or LevelRoots not assigned!");
+            return;
+        }
+
+        if (levels.Count != levelRoots.Count)
+        {
+            Debug.LogError("Levels and LevelRoots count mismatch!");
+            return;
+        }
+
+        currentLevel = GetActiveLevelIndex();
+
         LoadLevel(currentLevel);
+    }
+
+    int GetActiveLevelIndex()
+    {
+        for (int i = 0; i < levelRoots.Count; i++)
+        {
+            if (levelRoots[i].activeInHierarchy)
+            {
+                return i;
+            }
+        }
+
+        return 0; // fallback
     }
 
     void LoadLevel(int levelIndex)
@@ -38,6 +69,7 @@ public class CheckPointManager : MonoBehaviour
 
         int total = levels[currentLevel].checkpoints.Length;
         Total_CP.text = "/ " + total.ToString();
+        Current_CP.text = "0";
     }
 
     void Update()
@@ -72,8 +104,13 @@ public class CheckPointManager : MonoBehaviour
 
         for (int i = 0; i < currentLevelCheckpoints.Length; i++)
         {
-            currentLevelCheckpoints[i].SetActive(i == currentCheckPoint);
+            if (currentLevelCheckpoints[i] != null)
+                currentLevelCheckpoints[i].SetActive(i == currentCheckPoint);
         }
+
+        // Arrow logic
+        if (player == null || arrow == null) return;
+
 
         // Arrow Direction Logic
         if (currentCheckPoint < currentLevelCheckpoints.Length)
@@ -81,7 +118,7 @@ public class CheckPointManager : MonoBehaviour
             // Point to current checkpoint
             UpdateArrowDirection(currentLevelCheckpoints[currentCheckPoint].transform);
         }
-        else
+        else if (currentLevel < landingSpots.Length)
         {
             // All checkpoints done → point to landing spot
             UpdateArrowDirection(landingSpots[currentLevel]);
