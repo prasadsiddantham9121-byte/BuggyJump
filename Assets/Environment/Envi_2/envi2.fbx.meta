@@ -7,88 +7,48 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Material
-    second: {fileID: 2100000, guid: ea743d2a944a82a44aa44e8e7dfacc69, type: 2}
+      name: Material.001
+    second: {fileID: 2100000, guid: 04c8e29fdde511e499c2638d1a66f887, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: WorldIndustrialBuildings2Material
-    second: {fileID: 2100000, guid: a7ac32bd029435145ad16746baa59a74, type: 2}
+      name: WorldIndustrialBuildings2Material.001
+    second: {fileID: 2100000, guid: 4545649da5f187248ad1c62bcfd9bd84, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: WorldIndustrialBuildingsMaterial
-    second: {fileID: 2100000, guid: 652fa1fa41184f24ab9a60c77e1aba4e, type: 2}
+      name: WorldIndustrialBuildingsMaterial.001
+    second: {fileID: 2100000, guid: 43c4393ae591b2d4a9a35d851d065635, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: WorldIndustrialInvisibleWallMaterial
-    second: {fileID: 2100000, guid: 6832d631b97ef3743b8e0c7d5a010e7d, type: 2}
+      name: WorldIndustrialInvisibleWallMaterial.001
+    second: {fileID: 2100000, guid: 0e0563686e05c4e42bed5628c62a964b, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: WorldIndustrialMiscMaterial
-    second: {fileID: 2100000, guid: 59ebb64b9347f0c469227d6dad0c376e, type: 2}
+      name: WorldIndustrialMiscMaterial.001
+    second: {fileID: 2100000, guid: 24fd5c1796149964ab5c1d0c6d107173, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: WorldIndustrialOpaqueMaterial
-    second: {fileID: 2100000, guid: de8cd2ca607f5c34c84ed7070a170615, type: 2}
+      name: WorldIndustrialOpaqueMaterial.001
+    second: {fileID: 2100000, guid: 97228bc8d90d9bd458baf89073c3afe8, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: WorldIndustrialStreet2Material
-    second: {fileID: 2100000, guid: 1bab8fbc8ad46d24bb9c690038d0e53d, type: 2}
+      name: WorldIndustrialStreet2Material.001
+    second: {fileID: 2100000, guid: ae741fcb514df984da7193c229a5ad71, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: WorldIndustrialStreetMaterial
-    second: {fileID: 2100000, guid: 3972529439e7b044daed9d5f6d352d45, type: 2}
+      name: WorldIndustrialStreetMaterial.001
+    second: {fileID: 2100000, guid: a0670160dd20eab489ee6c08f621d013, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: WorldIndustrialTransparentMaterial
-    second: {fileID: 2100000, guid: f2e3dede672c6be49a0ab54159324161, type: 2}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: WorldIndustrialBuildings2Material_baseColor
-    second: {fileID: 2800000, guid: e057ac88c92325e4882325731224417c, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: WorldIndustrialBuildingsMaterial_baseColor
-    second: {fileID: 2800000, guid: 43878906acd56984b99f1c3f6a880b11, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: WorldIndustrialMiscMaterial_baseColor
-    second: {fileID: 2800000, guid: 60bed8df4045f0847bcaf99eae024631, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: WorldIndustrialOpaqueMaterial_baseColor
-    second: {fileID: 2800000, guid: 00dd3c44ca2b45a448464cff2bf767ec, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: WorldIndustrialSeaMaterial_baseColor
-    second: {fileID: 2800000, guid: 6a83a14fef449a942a899bf8aa5a74a4, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: WorldIndustrialStreet2Material_baseColor
-    second: {fileID: 2800000, guid: 18133ad0a84c4744687e7fe16c990a86, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: WorldIndustrialStreetMaterial_baseColor
-    second: {fileID: 2800000, guid: 661f9b0be9029e04eb0c7353ff35180d, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: WorldIndustrialTransparentMaterial_baseColor
-    second: {fileID: 2800000, guid: 3be8d9be335d7724c9b9f16d7b6f3e94, type: 3}
+      name: WorldIndustrialTransparentMaterial.001
+    second: {fileID: 2100000, guid: f00b79d7e3ea6974c895ad4ac27150ce, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -120,7 +80,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 3
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -175,7 +135,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 0.03
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
