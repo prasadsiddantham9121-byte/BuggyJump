@@ -29,6 +29,11 @@ public class PlayerController : MonoBehaviour
     
     private bool isBoosting = false;
 
+    void Awake()
+    {
+        instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,61 +45,6 @@ public class PlayerController : MonoBehaviour
     {
         HandleMovement();
     }
-
-    //public void HandleMovement()
-    //{
-    //    //Forward Movement
-    //    transform.position += transform.forward * speedMovement * Time.deltaTime;
-
-    //    //Inputs
-    //    float horizontalInput = Input.GetAxis("Horizontal");
-    //    float verticalInput = Input.GetAxis("Vertical");
-
-    //    //Yaw, Pitch And Roll Movements
-
-    //    Yaw += horizontalInput * YewAmount * Time.deltaTime;
-    //    float pitch = Mathf.Lerp(0,25, Mathf.Abs(verticalInput)) * -Mathf.Sign(verticalInput);
-    //    float roll = Mathf.Lerp(0, 45, Mathf.Abs(horizontalInput)) * -Mathf.Sign(horizontalInput);
-
-    //    //apply rotation
-    //    transform.localRotation = Quaternion.Euler(Vector3.up * Yaw + Vector3.right * pitch + Vector3.forward * roll);
-
-    //}
-
-    //void HandleMovement()
-    //{
-    //    //Added newly
-    //    float currentSpeed = isBoosting ? boostSpeed : speedMovement;
-
-    //    transform.position += transform.forward * speedMovement * Time.deltaTime;
-
-
-    //    float horizontal = Input.GetAxis("Horizontal");
-    //    float vertical = Input.GetAxis("Vertical");
-
-
-    //    smoothHorizontal = Mathf.Lerp(smoothHorizontal, horizontal, inputSmoothSpeed * Time.deltaTime);
-    //    smoothVertical = Mathf.Lerp(smoothVertical, vertical, inputSmoothSpeed * Time.deltaTime);
-
-
-    //    yaw += smoothHorizontal * YawAmount * Time.deltaTime;
-
-
-    //    float pitch = Mathf.Lerp(0, 25f, Mathf.Abs(smoothVertical)) * -Mathf.Sign(smoothVertical);
-
-
-    //    float roll = Mathf.Lerp(0, 45f, Mathf.Abs(smoothHorizontal)) * -Mathf.Sign(smoothHorizontal);
-
-
-    //    Quaternion targetRotation = Quaternion.Euler(pitch, yaw, roll);
-
-
-    //    transform.rotation = Quaternion.Slerp(
-    //        transform.rotation,
-    //        targetRotation,
-    //        4f * Time.deltaTime   // reduce this from 4 → 2 for smoother feel
-    //    );
-    //}
 
     void HandleMovement()
     {
@@ -115,18 +65,11 @@ public class PlayerController : MonoBehaviour
         float pitch = Mathf.Lerp(0, 25f, Mathf.Abs(smoothVertical)) * -Mathf.Sign(smoothVertical);
         float roll = Mathf.Lerp(0, 45f, Mathf.Abs(smoothHorizontal)) * -Mathf.Sign(smoothHorizontal);
 
-        //if (isBoosting)
-        //{
-        //    roll += boostRotationSpeed * Time.deltaTime;
-        //}
+       
 
         Quaternion targetRotation = Quaternion.Euler(pitch, yaw, roll);
 
-        transform.rotation = Quaternion.Slerp(
-            transform.rotation,
-            targetRotation,
-            2f * Time.deltaTime
-        );
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 2.5f * Time.deltaTime);
 
         
     }
@@ -135,13 +78,6 @@ public class PlayerController : MonoBehaviour
     {
         StartCoroutine(EnableAfterDelay(1f));
        
-
-        //StartCoroutine(SwitchCameraDelay());
-        //rb.isKinematic = true;
-        //rb.useGravity = false;
-
-        //enabled = true;
-
     }
     
     public void DisableControls()
@@ -161,7 +97,7 @@ public class PlayerController : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
 
-        rb.isKinematic = true;
+        rb.isKinematic = false;
         rb.useGravity = false;
 
         enabled = true;
@@ -213,5 +149,6 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    
 
 }

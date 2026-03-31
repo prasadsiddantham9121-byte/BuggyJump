@@ -67,7 +67,7 @@ public class UI_Canvas : MonoBehaviour
     
     public void ShowLevelFail()
     {
-        levelFailPanel.SetActive(true);
+        StartCoroutine(ShowlevelFailWithDelay());
 
     }
 
@@ -87,6 +87,12 @@ public class UI_Canvas : MonoBehaviour
     {
         yield return new WaitForSeconds(8f);
         levelPassPanel.SetActive(true);
+    }
+
+    public IEnumerator ShowlevelFailWithDelay()
+    {
+        yield return new WaitForSeconds(4f);
+        levelFailPanel.SetActive(true);
     }
 
     //==================================================== UI Buttons =================================================================

@@ -11,6 +11,7 @@ TagManager:
   - border
   - Time
   - AddTime
+  - Ground
   layers:
   - Default
   - TransparentFX
