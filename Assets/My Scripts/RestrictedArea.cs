@@ -4,17 +4,17 @@ public class RestrictedArea : MonoBehaviour
 {
     public string warningMessage = "Restricted Area!";
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             UI_Canvas.instance.ShowWarning(warningMessage);
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnCollisionExit(Collision collision)
     {
-        if (other.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             UI_Canvas.instance.HideWarning();
         }

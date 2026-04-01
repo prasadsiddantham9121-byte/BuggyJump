@@ -5,59 +5,48 @@ using TMPro;
 
 public class CheckPointManager : MonoBehaviour
 {
+    public static CheckPointManager instance;
+
     [System.Serializable]
     public class LevelCheckpoints
     {
-        public GameObject[] checkpoints; 
+        public GameObject[] checkpoints;
     }
 
-    [Header("Levels Data")]
-    public List<LevelCheckpoints> levels = new List<LevelCheckpoints>();
-    public List<GameObject> levelRoots = new List<GameObject>(); // 👈 Assign Level1, Level2, etc.
+    [System.Serializable]
+    public class LevelRings
+    {
+        public GameObject[] rings;
+    }
 
+    public List<LevelCheckpoints> levels = new List<LevelCheckpoints>();
+    public List<LevelRings> levelRings = new List<LevelRings>();
 
     public TextMeshProUGUI Current_CP;
     public TextMeshProUGUI Total_CP;
 
-    public int currentLevel = 0; 
+    public int currentLevel = 0;
+
     private int currentCheckPoint = 0;
+    private int ringsPassed = 0;
 
-    public Transform arrow;          // Arrow UI / 3D arrow
-    public Transform player;         // Player transform
+    public Transform arrow;
+    public Transform player;
 
-    public Transform[] landingSpots; // ONE per level
+    public Transform[] landingSpots;
+
+    [Header("UI Backgrounds")]
+    public GameObject checkpointBG;
+    public GameObject ringBG;
+
+    void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {
-        // Safety check
-        if (levels.Count == 0 || levelRoots.Count == 0)
-        {
-            Debug.LogError("Levels or LevelRoots not assigned!");
-            return;
-        }
-
-        if (levels.Count != levelRoots.Count)
-        {
-            Debug.LogError("Levels and LevelRoots count mismatch!");
-            return;
-        }
-
-        currentLevel = GetActiveLevelIndex();
-
         LoadLevel(currentLevel);
-    }
-
-    int GetActiveLevelIndex()
-    {
-        for (int i = 0; i < levelRoots.Count; i++)
-        {
-            if (levelRoots[i].activeInHierarchy)
-            {
-                return i;
-            }
-        }
-
-        return 0; // fallback
     }
 
     void LoadLevel(int levelIndex)
@@ -66,62 +55,87 @@ public class CheckPointManager : MonoBehaviour
 
         PlayerPrefs.SetInt("CheckPoint", 0);
         currentCheckPoint = 0;
+        ringsPassed = 0;
 
-        int total = levels[currentLevel].checkpoints.Length;
+        var checkpoints = levels[currentLevel].checkpoints;
+        var rings = levelRings[currentLevel].rings;
+
+        bool hasCheckpoints = checkpoints.Length > 0;
+        bool hasRings = rings.Length > 0;
+
+        // ---------------- UI SWITCH ----------------
+        checkpointBG.SetActive(hasCheckpoints);
+        ringBG.SetActive(hasRings);
+
+        // ---------------- TOTAL COUNT ----------------
+        int total = hasCheckpoints ? checkpoints.Length : rings.Length;
+
         Total_CP.text = "/ " + total.ToString();
         Current_CP.text = "0";
+
+        // ---------------- ACTIVATE RINGS ----------------
+        if (hasRings)
+        {
+            foreach (var ring in rings)
+            {
+                ring.SetActive(true);
+            }
+        }
     }
 
     void Update()
     {
-        currentCheckPoint = PlayerPrefs.GetInt("CheckPoint");
+        var checkpoints = levels[currentLevel].checkpoints;
+        bool hasCheckpoints = checkpoints.Length > 0;
 
-        Current_CP.text = currentCheckPoint.ToString();
-
-       
-
-        //if (currentCheckPoint >= currentLevelCheckpoints.Length)
-        //{
-        //    Debug.Log("Level Complete!");
-
-
-        //    currentLevel++;
-
-        //    if (currentLevel < levels.Count)
-        //    {
-        //        LoadLevel(currentLevel);
-        //    }
-
-        //    enabled = false;
-
-
-        //}
+        if (hasCheckpoints)
+        {
+            currentCheckPoint = PlayerPrefs.GetInt("CheckPoint");
+            Current_CP.text = currentCheckPoint.ToString();
+        }
+        else
+        {
+            Current_CP.text = ringsPassed.ToString();
+        }
     }
 
     public void LateUpdate()
     {
-        var currentLevelCheckpoints = levels[currentLevel].checkpoints;
+        var checkpoints = levels[currentLevel].checkpoints;
+        var rings = levelRings[currentLevel].rings;
 
-        for (int i = 0; i < currentLevelCheckpoints.Length; i++)
+        bool hasCheckpoints = checkpoints.Length > 0;
+        bool hasRings = rings.Length > 0;
+
+        // ---------------- CHECKPOINT LEVEL ----------------
+        if (hasCheckpoints)
         {
-            if (currentLevelCheckpoints[i] != null)
-                currentLevelCheckpoints[i].SetActive(i == currentCheckPoint);
+            for (int i = 0; i < checkpoints.Length; i++)
+            {
+                checkpoints[i].SetActive(i == currentCheckPoint);
+            }
+
+            if (currentCheckPoint < checkpoints.Length)
+            {
+                UpdateArrowDirection(checkpoints[currentCheckPoint].transform);
+            }
+            else
+            {
+                UpdateArrowDirection(landingSpots[currentLevel]);
+            }
         }
 
-        // Arrow logic
-        if (player == null || arrow == null) return;
-
-
-        // Arrow Direction Logic
-        if (currentCheckPoint < currentLevelCheckpoints.Length)
+        // ---------------- RING LEVEL ----------------
+        else if (hasRings)
         {
-            // Point to current checkpoint
-            UpdateArrowDirection(currentLevelCheckpoints[currentCheckPoint].transform);
-        }
-        else if (currentLevel < landingSpots.Length)
-        {
-            // All checkpoints done → point to landing spot
-            UpdateArrowDirection(landingSpots[currentLevel]);
+            if (ringsPassed < rings.Length)
+            {
+                UpdateArrowDirection(rings[ringsPassed].transform);
+            }
+            else
+            {
+                UpdateArrowDirection(landingSpots[currentLevel]);
+            }
         }
     }
 
@@ -129,25 +143,12 @@ public class CheckPointManager : MonoBehaviour
     {
         Vector3 dir = target.position - player.position;
 
-        // Convert 3D world direction to 2D plane (XZ → XY)
         float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
 
         arrow.rotation = Quaternion.Euler(0, 0, -angle);
     }
 
-    //void UpdateArrowDirection(Transform target)
-    //{
-    //    Vector3 dir = target.position - player.position;
-
-    //    // Keep arrow horizontal (ignore height difference)
-    //    dir.y = 0;
-
-    //    if (dir != Vector3.zero)
-    //    {
-    //        arrow.rotation = Quaternion.LookRotation(dir) * Quaternion.Euler(0, 90, 0);
-    //    }
-    //}
-
+    // ---------------- CHECKPOINT ----------------
     public void CollectCheckpoint()
     {
         currentCheckPoint++;
@@ -155,5 +156,22 @@ public class CheckPointManager : MonoBehaviour
         PlayerPrefs.SetInt("CheckPoint", currentCheckPoint);
 
         Current_CP.text = currentCheckPoint.ToString();
+    }
+
+    // ---------------- RING ----------------
+    public void CollectRing()
+    {
+        ringsPassed++;
+
+        Current_CP.text = ringsPassed.ToString();
+
+       
+
+        var rings = levelRings[currentLevel].rings;
+
+        if (ringsPassed >= rings.Length)
+        {
+            Debug.Log("All Rings Completed → Go to Landing!");
+        }
     }
 }
