@@ -180,7 +180,6 @@ public class UI_Canvas : MonoBehaviour
         isCutscenePlaying = state;
     }
 
-   //Cut Scene Added//
-
+  
 
 }
