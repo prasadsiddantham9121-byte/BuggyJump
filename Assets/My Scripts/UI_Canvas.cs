@@ -15,7 +15,9 @@ public class UI_Canvas : MonoBehaviour
     public GameObject startPanel;
     public GameObject inGameUI;
     private ScreenFader screenFader;
+    private bool isCutscenePlaying = false;
 
+    
 
     [Header("Timer")]
     [SerializeField] private TextMeshProUGUI timerText;
@@ -102,6 +104,7 @@ public class UI_Canvas : MonoBehaviour
         startPanel.SetActive(false);
         StartCoroutine(screenFader.FadeIn());
         Time.timeScale = 1f;
+        SetCutsceneState(true);
     }
 
     public void HomeButton()
@@ -112,6 +115,8 @@ public class UI_Canvas : MonoBehaviour
 
     public void PauseButtonHandler()
     {
+        if (isCutscenePlaying) return;
+
         if (levelPassPanel.activeInHierarchy) return;
         if (levelFailPanel.activeInHierarchy) return;
         if (startPanel.activeInHierarchy) return;
@@ -168,6 +173,14 @@ public class UI_Canvas : MonoBehaviour
             yield return null;
         }
     }
+
+    //============================================= Cut Scene Hadler ======================================================
+    public void SetCutsceneState(bool state)
+    {
+        isCutscenePlaying = state;
+    }
+
+   //Cut Scene Added//
 
 
 }

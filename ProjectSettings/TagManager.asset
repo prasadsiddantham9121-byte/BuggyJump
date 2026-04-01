@@ -12,6 +12,7 @@ TagManager:
   - Time
   - AddTime
   - Ground
+  - Ragdoll
   layers:
   - Default
   - TransparentFX
