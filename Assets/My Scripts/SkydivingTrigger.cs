@@ -29,6 +29,7 @@ public class SkydivingTrigger : MonoBehaviour
 
         
             UI_Canvas.instance.inGameUI.SetActive(true);
+            UI_Canvas.instance.SetCutsceneState(false);
         }
     }
 }
