@@ -18,6 +18,11 @@ public class SkydivingTrigger : MonoBehaviour
 
             print("player triggered");
 
+            int index = 1;
+
+            other.GetComponent<PlayerVisualController>().SetJet(index);
+            
+
             other.GetComponent<PlayerVisualController>().TriggerFlyingAnimation();
 
             other.GetComponent<PlayerController>().EnableControls();
