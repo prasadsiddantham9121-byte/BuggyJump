@@ -4,16 +4,26 @@ using UnityEngine;
 
 public class PlayerVisualController : MonoBehaviour
 {
-   
+    //======================================== Jet ======================================================================
 
     public Animator playerAnimator;
-
     public Animator jetAnimator;
+
+    [System.Serializable]
+    public class JetData
+    {
+        public AnimatorOverrideController overrideController;
+        public bool hasOpenClose; // ✅ true = open/close, false = single animation
+    }
+
+    public JetData[] jets;
+    private int currentJetIndex;
+
+    //======================================== Player ======================================================================
 
     public GameObject playerModel;   // your current animated player
     public GameObject ragdollModel;  // ragdoll version
 
-    // 🔥 NEW (IMPORTANT)
     public Transform playerHips;
     public Transform ragdollHips;
 
@@ -61,11 +71,8 @@ public class PlayerVisualController : MonoBehaviour
         boxCollider.enabled = false;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    //======================================== Player Animations ======================================================================
+
 
     public void TriggorJumpAnimation()
     {
@@ -74,8 +81,6 @@ public class PlayerVisualController : MonoBehaviour
         playerRB.isKinematic = false;
         playerRB.useGravity = true;
     }
-
-    //Coroutine flyingRoutine;
 
     public void TriggerFlyingAnimation()
     {
@@ -99,25 +104,6 @@ public class PlayerVisualController : MonoBehaviour
         boxCollider.enabled = false;
     }
 
-    public void JetOpenAnimation()
-    {
-        StartCoroutine(JetOpenWithDelay());
-    }
-
-    IEnumerator JetOpenWithDelay()
-    {
-        yield return new WaitForSeconds(1.5f);
-        jetAnimator.SetBool("Jet_Open", true);
-    }
-    
-    public void JetCloseAnimation()
-    {
-        jetAnimator.SetBool("Jet_Close", true);
-
-    }
-
-    
-
     public void SadWalk()
     {
         playerAnimator.SetBool("IsWin", false);
@@ -131,6 +117,59 @@ public class PlayerVisualController : MonoBehaviour
     public void SetWin(bool win)
     {
         playerAnimator.SetBool("IsWin", win);
+    }
+
+    // ===================== JET FUNCTIONS =====================
+
+    public void SetJet(int index)
+    {
+        currentJetIndex = index;
+
+        jetAnimator.runtimeAnimatorController = jets[index].overrideController;
+
+        // ✅ Resume animation (important if previously stopped)
+        jetAnimator.speed = 1f;
+
+        // ✅ If jet has only ONE animation (swing type)
+        if (!jets[index].hasOpenClose)
+        {
+            jetAnimator.Play("Jet_Open_Anim",0,0); // plays swing animation
+        }
+    }
+
+    public void JetOpenAnimation()
+    {
+        StartCoroutine(JetOpenWithDelay());
+    }
+
+    IEnumerator JetOpenWithDelay()
+    {
+        yield return new WaitForSeconds(1.5f);
+        if (jets[currentJetIndex].hasOpenClose)
+        {
+            jetAnimator.SetTrigger("Jet_Open");
+        }
+    }
+
+    public void JetCloseAnimation()
+    {
+        Debug.Log("Jet Close Called");
+        Debug.Log("hasOpenClose = " + jets[currentJetIndex].hasOpenClose);
+
+
+        if (jets[currentJetIndex].hasOpenClose)
+        {
+            jetAnimator.SetTrigger("Jet_Close");
+        }
+    }
+
+    // ✅ STOP ONLY FOR SINGLE ANIMATION JETS
+    public void StopJetAnimation()
+    {
+        if (!jets[currentJetIndex].hasOpenClose)
+        {
+            jetAnimator.speed = 0f;
+        }
     }
 
     //======================================================= Activating Ragdoll ===========================================
@@ -147,67 +186,6 @@ public class PlayerVisualController : MonoBehaviour
 
         }
     }
-
-    //public void ActivateRagdoll()
-    //{
-    //    playerAnimator.enabled = false;
-
-    //    // Disable player visuals + control
-    //    playerModel.SetActive(false);
-
-    //    // Enable ragdoll
-    //    ragdollModel.SetActive(true);
-
-    //    // Match position & rotation
-    //    ragdollModel.transform.position = playerModel.transform.position;
-    //    ragdollModel.transform.rotation = playerModel.transform.rotation;
-
-    //    // Transfer velocity (important for realism)
-    //    Rigidbody[] ragdollBodies = ragdollModel.GetComponentsInChildren<Rigidbody>();
-
-    //    foreach (Rigidbody rb in ragdollBodies)
-    //    {
-    //        rb.velocity = playerRB.velocity;
-    //    }
-    //}
-
-    //public void ActivateRagdoll()
-    //{
-    //    isRagdollActive = true;
-
-    //    playerAnimator.enabled = false;
-
-    //    // ✅ BEST POSITION FIX (HIPS ALIGNMENT)
-    //    Vector3 offset = ragdollModel.transform.position - ragdollHips.position;
-
-    //    ragdollModel.transform.position =
-    //        playerHips.position + offset + Vector3.up * 0.2f;
-
-    //    ragdollModel.transform.rotation = playerHips.rotation;
-
-    //    // Disable player
-    //    playerModel.SetActive(false);
-
-    //    // Enable ragdoll
-    //    ragdollModel.SetActive(true);
-
-    //    // ✅ Enable physics properly
-    //    Rigidbody[] ragdollBodies = ragdollModel.GetComponentsInChildren<Rigidbody>();
-
-    //    foreach (Rigidbody rb in ragdollBodies)
-    //    {
-    //        rb.isKinematic = false;
-    //        rb.useGravity = true;
-    //        rb.velocity = playerRB.velocity;
-    //    }
-
-    //    // ✅ SWITCH CAMERA
-    //    CameraFollow cam = FindObjectOfType<CameraFollow>();
-    //    if (cam != null)
-    //    {
-    //        cam.SetTarget(ragdollModel.transform);
-    //    }
-    //}
 
     public void ActivateRagdoll()
     {

@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/LevelSelection.unity
     guid: 417662acf50b7f54dbfd2b307f6e3653
   - enabled: 1
-    path: Assets/Scenes/Buggy_Jump.unity
+    path: Assets/Scenes/SkyDiving.unity
     guid: b1b7f4403b3bf7745948faf4e3c00a29
   m_configObjects: {}
