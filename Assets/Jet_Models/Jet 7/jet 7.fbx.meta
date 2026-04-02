@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 83979151fa6cb474e9e8bf8d7569b1db
+guid: b31572a850974fa4a839492822c20332
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,18 +7,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Material.003
-    second: {fileID: 2100000, guid: 1af557e5626093e45aca880541d99f14, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Material.004
-    second: {fileID: 2100000, guid: 175889b51ad4895438f23b138ede830f, type: 2}
+      name: BlackBlue
+    second: {fileID: 2100000, guid: 4d70b5087f5169245aa41676573dd7af, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
-      name: 6b3d78ce4e62442f85a1f4ea64024f28_R_Wings_RobotWings_Roughness
-    second: {fileID: 2800000, guid: f7457a8b33d27c4468d279cec37a7ea7, type: 3}
+      name: 18c7433d0145472d86b3b4f2dbda6d12_RGB_Wings_BlackBlue_BaseColor
+    second: {fileID: 2800000, guid: ac45e8214d7b0fe44a90aec5148e59b5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 8f60d3b85bf94e3ebd666522e5aff5f0_RGB_Wings_BlackBlue_Emissive
+    second: {fileID: 2800000, guid: 73e727dc708cf1540a0a5186eef38096, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 using System.Collections;
+using System.Linq;
 
 public class LandingTrigger : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class LandingTrigger : MonoBehaviour
     private void Start()
     {
         cpManager = FindObjectOfType<CheckPointManager>();
+
+        landingCamera = Resources.FindObjectsOfTypeAll<Camera>().FirstOrDefault(cam => cam.CompareTag("LandingCamera"))?.gameObject;
+
         missedCP.gameObject.SetActive(false);
     }
 
