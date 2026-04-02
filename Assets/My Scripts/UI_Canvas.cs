@@ -18,7 +18,7 @@ public class UI_Canvas : MonoBehaviour
     private bool isCutscenePlaying = false;
 
     
-
+    //=== dummy ==================
     [Header("Timer")]
     [SerializeField] private TextMeshProUGUI timerText;
 
