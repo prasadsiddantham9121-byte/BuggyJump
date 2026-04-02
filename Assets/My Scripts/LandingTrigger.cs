@@ -30,6 +30,7 @@ public class LandingTrigger : MonoBehaviour
 
         // Close jet
         visual.JetCloseAnimation();
+        visual.StopJetAnimation();
 
         int totalCP = cpManager.levels[cpManager.currentLevel].checkpoints.Length;
         int currentCP = PlayerPrefs.GetInt("CheckPoint");
