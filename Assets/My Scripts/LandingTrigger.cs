@@ -1,11 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using TMPro;
+using System.Collections;
 
 public class LandingTrigger : MonoBehaviour
 {
     public GameObject landingCamera;
     public GameObject mainCamera;
+    public TextMeshProUGUI missedCP;
+    
 
     private CheckPointManager cpManager;
 
@@ -14,6 +16,7 @@ public class LandingTrigger : MonoBehaviour
     private void Start()
     {
         cpManager = FindObjectOfType<CheckPointManager>();
+        missedCP.gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -47,6 +50,7 @@ public class LandingTrigger : MonoBehaviour
         {
             Debug.Log("Level Failed! Missed checkpoints.");
             visual.SetWin(false);   // will go to Sad Walk AFTER landing
+            missedCP.gameObject.SetActive(true);
             UI_Canvas.instance.ShowLevelFail();
         }
         else
