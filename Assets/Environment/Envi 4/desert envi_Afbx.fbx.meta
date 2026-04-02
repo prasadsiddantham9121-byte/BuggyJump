@@ -3,7 +3,217 @@ guid: 04736ba98147d9f4e915b9adc51e7bcd
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HODING
+    second: {fileID: 2100000, guid: 85421291f5a039744b9adcb2e15c68b0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: L4_Road_Barrier_001
+    second: {fileID: 2100000, guid: a0b7adc87a7866c469e58d44f87b571d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: L4_Road_Barrier_002
+    second: {fileID: 2100000, guid: 472f4a4a7ff3d0f4993e3ff08ec15ced, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: L4_Windmill
+    second: {fileID: 2100000, guid: 18e997a5f89235740a2bc22e2d67dbab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: L8_Road_001.001
+    second: {fileID: 2100000, guid: 0fe47d3943db52b4b9a277886f62f331, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: ab9a36ff1f304fa46a6f45f6d32696d8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.001
+    second: {fileID: 2100000, guid: 360f4a9b936cb9a4cbbeff764c484cab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.002
+    second: {fileID: 2100000, guid: 1f9fe55ca87c9534c9422541119d0142, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.003
+    second: {fileID: 2100000, guid: eac500e181c44834f9a1015a0fcf6583, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.004
+    second: {fileID: 2100000, guid: ab83d39a5b3cb9943a1658486b5de1b5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.005
+    second: {fileID: 2100000, guid: 49fa7f499205377478475ebb92a9269f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.006
+    second: {fileID: 2100000, guid: fbeb10fb3f5860a4cb04ae386174f691, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.007
+    second: {fileID: 2100000, guid: 00c130b7477d58747b425d4dbaccc4ae, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.008
+    second: {fileID: 2100000, guid: 8bd6b81e708c94741bb3c08c1c2fcd4e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.009
+    second: {fileID: 2100000, guid: 8415dc7c440503544ba0f09a7a487d0e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.010
+    second: {fileID: 2100000, guid: 16fea442ece8b9541a8a652d84c98fa9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.011
+    second: {fileID: 2100000, guid: 3bb74f87e4c030d48917eb4e303cff0f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.012
+    second: {fileID: 2100000, guid: 55bca7ed1504f374689b08c3233ae977, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.013
+    second: {fileID: 2100000, guid: b96289f5e26161840bccc24ce7258c01, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.014
+    second: {fileID: 2100000, guid: 0c8d1feb2820b3a4fa07d8c677f4a5fc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.015
+    second: {fileID: 2100000, guid: 353ad4fabd021dd4f8184ed809d5cf35, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.016
+    second: {fileID: 2100000, guid: 3a73312fcb1142843a8a8ad0bc435d98, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.018
+    second: {fileID: 2100000, guid: 650a970f266fcc1468c7c2e3479954a1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ROCK
+    second: {fileID: 2100000, guid: 4f95e882eef99ca4f84cc42f5f77ca4b, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 0a71d729b0374fce87dcd9f36eb8c293_RGB_mud-house-4
+    second: {fileID: 2800000, guid: 91d19c451dac5b4409cc2f25ea4a9355, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 1219866a324b44c79867b3ab6c6a756f_RGB_small-1
+    second: {fileID: 2800000, guid: c2c4d5a0540885b4da24d96c69b47f3b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 40f71ed764ee4c22a55c6205058a4f5a_RGB_main-2
+    second: {fileID: 2800000, guid: 5bff350a7b4e4784dafe8f1dfc0fb291, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 581e25bab92748feb1de9676e4763b13_RGB_smal-2l
+    second: {fileID: 2800000, guid: c5a48d9588251b04ebe4fe302d8fca28, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 65089d0e289e425e83da27076c7507e2_RGB_small
+    second: {fileID: 2800000, guid: 812d54a4d2ddc1a4b836c242917e2d80, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 6c0df9469ad846628d54ce6efef38d79_RGB_main
+    second: {fileID: 2800000, guid: 1d010de50aba8c54aa0451c48de1ac6c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Gemini_Generated_Image_7ccwsu7ccwsu7ccw
+    second: {fileID: 2800000, guid: 7c736ee8ed56c2341a245bff49190e1a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: L4_Road_Barrier_001
+    second: {fileID: 2800000, guid: 991ab1f1691c4b64f96f9bd6e75e767f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: L4_Road_Barrier_002
+    second: {fileID: 2800000, guid: 1ec9a6634f82b614894bb57693a7bd1a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: L4_Windmill
+    second: {fileID: 2800000, guid: c3027e7085f00de48be4c1a4c1e92be8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: L8_Road_001
+    second: {fileID: 2800000, guid: 257f06efb5dd67f48b14fe72931f880a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Stylized_Desert_Cliff_basecolor
+    second: {fileID: 2800000, guid: bce0ad3846cd755459da5941253af577, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: a55983b18d084512ab4afe034771fc40_RGB_main-1
+    second: {fileID: 2800000, guid: 27908b22d9e157b4a848925c3df0557a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: be7e9715740a47d3adc118d63fd4a7ff_RGB_Mud-2
+    second: {fileID: 2800000, guid: a98b001cafd5c7448affabf9d1e0e839, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: desert-landscape-morocco
+    second: {fileID: 2800000, guid: 1e8fc8d03b242be408e43b25276819d2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: f8f098508fda4f8891258badd7a67667_RGB_mud-1
+    second: {fileID: 2800000, guid: 2b69bc557ca8abb42a8b7b43618b57e1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: pngwing.com (19)
+    second: {fileID: 2800000, guid: f74605068b924204ca0ce9329912efe8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: sand texture
+    second: {fileID: 2800000, guid: 3560e171886f01f4d934f16bdafca978, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
