@@ -12,7 +12,7 @@ public class LevelButton : MonoBehaviour
     {
 
         PlayerPrefs.SetInt(StringsData.levelToLoad,levelToLoad);
-        SceneManager.LoadScene("Buggy_Jump");
+        SceneManager.LoadScene(1);
     }
 
    
