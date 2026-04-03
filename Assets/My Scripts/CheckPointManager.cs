@@ -71,8 +71,7 @@ public class CheckPointManager : MonoBehaviour
 
     void LoadLevel(int levelIndex)
     {
-
-        // 🔥 STEP 1: DISABLE EVERYTHING FROM ALL LEVELS
+        // 🔥 Disable everything first
         foreach (var lvl in levelsCheckPoints)
         {
             foreach (var cp in lvl.checkpoints)
@@ -92,8 +91,6 @@ public class CheckPointManager : MonoBehaviour
         }
 
         currentLevel = levelIndex;
-
-        PlayerPrefs.SetInt("CheckPoint", 0);
         currentCheckPoint = 0;
         ringsPassed = 0;
 
@@ -103,14 +100,13 @@ public class CheckPointManager : MonoBehaviour
         // 🔥 Detect level type
         if (checkpoints.Length > 0)
             levelType = LevelType.Checkpoints;
-        else if (rings.Length > 0)
+        else
             levelType = LevelType.Rings;
 
         // UI switch
         checkpointBG.SetActive(levelType == LevelType.Checkpoints);
         ringBG.SetActive(levelType == LevelType.Rings);
 
-        // ✅ ADD THIS RIGHT HERE
         Current_CP.gameObject.SetActive(levelType == LevelType.Checkpoints);
         Total_CP.gameObject.SetActive(levelType == LevelType.Checkpoints);
 
@@ -121,36 +117,16 @@ public class CheckPointManager : MonoBehaviour
 
         if (levelType == LevelType.Checkpoints)
         {
-            Total_CP.text = "/ " + total.ToString();
+            Total_CP.text = "/ " + total;
             Current_CP.text = "0";
+
+            ActivateCheckpoint(0);
         }
         else
         {
-            Total_Rings.text = "/ " + total.ToString();
+            Total_Rings.text = "/ " + total;
             Current_Rings.text = "0";
-        }
 
-        // 🔥 Disable ALL landing indicators
-        foreach (var spot in landingSpots)
-        {
-            if (spot != null && spot.childCount > 0)
-            {
-                spot.GetChild(0).gameObject.SetActive(false);
-            }
-        }
-
-        // ---------------- CHECKPOINT SETUP ----------------
-        if (levelType == LevelType.Checkpoints)
-        {
-            for (int i = 0; i < checkpoints.Length; i++)
-            {
-                checkpoints[i].SetActive(i == 0);
-            }
-        }
-
-        // ---------------- RING SETUP ----------------
-        else if (levelType == LevelType.Rings)
-        {
             foreach (var ring in rings)
             {
                 ring.SetActive(true);
@@ -159,47 +135,49 @@ public class CheckPointManager : MonoBehaviour
                 if (col != null) col.enabled = true;
             }
         }
+
+        // 🔥 Disable landing indicators
+        foreach (var spot in landingSpots)
+        {
+            if (spot != null && spot.childCount > 0)
+                spot.GetChild(0).gameObject.SetActive(false);
+        }
     }
 
     void Update()
     {
         if (levelType == LevelType.Checkpoints)
         {
-            currentCheckPoint = PlayerPrefs.GetInt("CheckPoint");
             Current_CP.text = currentCheckPoint.ToString();
-        }
-        else
-        {
-            Current_Rings.text = ringsPassed.ToString();
-        }
-    }
 
-    void LateUpdate()
-    {
-        var checkpoints = levelsCheckPoints[currentLevel].checkpoints;
-        var rings = levelRings[currentLevel].rings;
-
-        // ---------------- CHECKPOINT MODE ----------------
-        if (levelType == LevelType.Checkpoints)
-        {
-            for (int i = 0; i < checkpoints.Length; i++)
-            {
-                checkpoints[i].SetActive(i == currentCheckPoint);
-            }
+            var checkpoints = levelsCheckPoints[currentLevel].checkpoints;
 
             if (currentCheckPoint < checkpoints.Length)
                 UpdateArrowDirection(checkpoints[currentCheckPoint].transform);
             else
                 UpdateArrowDirection(landingSpots[currentLevel]);
         }
-
-        // ---------------- RING MODE ----------------
         else
         {
+            Current_Rings.text = ringsPassed.ToString();
+
+            var rings = levelRings[currentLevel].rings;
+
             if (ringsPassed < rings.Length)
                 UpdateArrowDirection(rings[ringsPassed].transform);
             else
                 UpdateArrowDirection(landingSpots[currentLevel]);
+        }
+    }
+
+    // 🔥 ONLY activate needed checkpoint
+    void ActivateCheckpoint(int index)
+    {
+        var checkpoints = levelsCheckPoints[currentLevel].checkpoints;
+
+        for (int i = 0; i < checkpoints.Length; i++)
+        {
+            checkpoints[i].SetActive(i == index);
         }
     }
 
@@ -213,7 +191,6 @@ public class CheckPointManager : MonoBehaviour
         arrow.rotation = Quaternion.Euler(0, 0, -angle);
     }
 
-    // 🔥 LANDING INDICATOR ACTIVATE
     void ActivateLandingIndicator()
     {
         if (landingSpots.Length > currentLevel)
@@ -221,13 +198,7 @@ public class CheckPointManager : MonoBehaviour
             Transform spot = landingSpots[currentLevel];
 
             if (spot != null && spot.childCount > 0)
-            {
                 spot.GetChild(0).gameObject.SetActive(true);
-            }
-            else
-            {
-                Debug.LogWarning("Landing indicator missing!");
-            }
         }
 
         Debug.Log("Go to Landing Area!");
@@ -239,12 +210,14 @@ public class CheckPointManager : MonoBehaviour
         if (levelType != LevelType.Checkpoints) return;
 
         currentCheckPoint++;
-        PlayerPrefs.SetInt("CheckPoint", currentCheckPoint);
 
         var checkpoints = levelsCheckPoints[currentLevel].checkpoints;
 
-        // 🔥 ALL CHECKPOINTS DONE
-        if (currentCheckPoint >= checkpoints.Length)
+        if (currentCheckPoint < checkpoints.Length)
+        {
+            ActivateCheckpoint(currentCheckPoint);
+        }
+        else
         {
             ActivateLandingIndicator();
         }
@@ -263,7 +236,6 @@ public class CheckPointManager : MonoBehaviour
 
         var rings = levelRings[currentLevel].rings;
 
-        // 🔥 ALL RINGS DONE
         if (ringsPassed >= rings.Length)
         {
             ActivateLandingIndicator();
