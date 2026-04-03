@@ -17,7 +17,7 @@ public class Ring : MonoBehaviour
         {
             collected = true;
 
-            CheckPointManager.instance.CollectRing();
+            CheckPointManager.instance.CollectRing(gameObject);
 
             ringCollider.enabled = false;
         }

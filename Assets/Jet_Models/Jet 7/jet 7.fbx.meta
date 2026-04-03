@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b31572a850974fa4a839492822c20332
+guid: 573eb9b423df8c843813ea19ddc49872
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -13,12 +13,12 @@ ModelImporter:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: 18c7433d0145472d86b3b4f2dbda6d12_RGB_Wings_BlackBlue_BaseColor
-    second: {fileID: 2800000, guid: ac45e8214d7b0fe44a90aec5148e59b5, type: 3}
+    second: {fileID: 2800000, guid: dbdef026543a68a418b34d1cf5d42ac8, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: 8f60d3b85bf94e3ebd666522e5aff5f0_RGB_Wings_BlackBlue_Emissive
-    second: {fileID: 2800000, guid: 73e727dc708cf1540a0a5186eef38096, type: 3}
+    second: {fileID: 2800000, guid: 7315ed25c5b306b4b872caa531912cf6, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
