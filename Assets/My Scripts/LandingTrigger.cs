@@ -4,16 +4,12 @@ using System.Collections;
 
 public class LandingTrigger : MonoBehaviour
 {
-    
-
+  
     public TextMeshProUGUI missedCP;
 
-    private CheckPointManager cpManager;
-
-   
     private void Start()
     {
-        cpManager = FindObjectOfType<CheckPointManager>();
+       
 
         missedCP.gameObject.SetActive(false);
     }
@@ -31,42 +27,83 @@ public class LandingTrigger : MonoBehaviour
         GameObject landingCamera = visual.landingCamera;
         GameObject mainCamera = visual.mainCamera;
 
-        // Close jet
+        
         visual.JetCloseAnimation();
         visual.StopJetAnimation();
 
-        int totalCP = cpManager.levelsCheckPoints[cpManager.currentLevel].checkpoints.Length;
-        //int currentCP = PlayerPrefs.GetInt("CheckPoint");
-
-        int currentCP = cpManager.GetCurrentCheckpoint();
-
-        // Disable player controls
+        
         controller.DisableControls();
         controller.ParticlesDisable();
 
-        // ✅ Switch camera (correct one)
+        
         if (mainCamera != null) mainCamera.SetActive(false);
         if (landingCamera != null) landingCamera.SetActive(true);
 
-        // Trigger landing animation
+        
         visual.TriggerLandingAnimation();
 
-        // ✅ Set result
-        if (currentCP < totalCP)
+        
+        TimeManager.instance.StopTimer();
+
+
+        //========================================= Chechpoint Level Pass and Fail Conditions ===============================
+
+        // Try checkpoint first
+        if (CheckPointManagered.instance != null)
         {
-            Debug.Log("Level Failed! Missed checkpoints.");
-            visual.SetWin(false);
-            missedCP.gameObject.SetActive(true);
-            UI_Canvas.instance.ShowLevelFail();
-        }
-        else
-        {
-            Debug.Log("Player Landed Successfully!");
-            visual.SetWin(true);
-            UI_Canvas.instance.ShowLevelPass();
+            if (CheckPointManagered.instance.AreAllCheckpointsCollected())
+            {
+                print("Level Pass");
+                UI_Canvas.instance.ShowLevelPass();
+            }
+            else
+            {
+                print("Level Fail");
+
+                missedCP.gameObject.SetActive(true);
+
+                int missed = GetMissedCount();
+                missedCP.text = " You Missed " + missed + " CheckPoints! ";
+
+                UI_Canvas.instance.ShowLevelFail();
+            }
         }
 
-        // Stop timer
-        TimeManager.instance.StopTimer();
+        // 👉 If no checkpoint manager, use rings
+        else if (RingPointManager.instance != null)
+        {
+            if (RingPointManager.instance.AreAllRingsCollected())
+            {
+                print("Level Pass");
+                UI_Canvas.instance.ShowLevelPass();
+            }
+            else
+            {
+                print("Level Fail");
+
+                missedCP.gameObject.SetActive(true);
+
+                int missed = GetMissedRings();
+                missedCP.text = " You Missed " + missed + " Rings! ";
+
+                UI_Canvas.instance.ShowLevelFail();
+            }
+        }
+
     }
+
+    int GetMissedCount()
+    {
+        return CheckPointManagered.instance == null ? 0 :
+               (CheckPointManagered.instance.GetTotal() - CheckPointManagered.instance.GetCurrent());
+    }
+
+    int GetMissedRings()
+    {
+        return RingPointManager.instance == null ? 0 :
+            (RingPointManager.instance.GetTotal() - RingPointManager.instance.GetCurrent());
+    }
+
+    //========================================= Ring Collection Level Pass and Fail Conditions ===============================
+
 }

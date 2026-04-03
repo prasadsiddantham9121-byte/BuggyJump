@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Ring : MonoBehaviour
 {
@@ -17,9 +17,12 @@ public class Ring : MonoBehaviour
         {
             collected = true;
 
-            CheckPointManager.instance.CollectRing(gameObject);
+
 
             ringCollider.enabled = false;
+
+
+            RingPointManager.instance.CollectRing(gameObject);
         }
     }
 }
