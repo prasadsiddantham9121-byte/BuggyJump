@@ -71,6 +71,8 @@ public class CheckPointManager : MonoBehaviour
 
     void LoadLevel(int levelIndex)
     {
+        Debug.Log("Loading Level: " + currentLevel);
+
         // 🔥 Disable everything first
         foreach (var lvl in levelsCheckPoints)
         {
