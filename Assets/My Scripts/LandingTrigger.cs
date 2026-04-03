@@ -1,24 +1,16 @@
 ﻿using UnityEngine;
 using TMPro;
 using System.Collections;
-using System.Linq;
 
 public class LandingTrigger : MonoBehaviour
 {
-    public GameObject landingCamera;
-    public GameObject mainCamera;
     public TextMeshProUGUI missedCP;
-    
 
     private CheckPointManager cpManager;
-
-    //private Animator anim;
 
     private void Start()
     {
         cpManager = FindObjectOfType<CheckPointManager>();
-
-        landingCamera = Resources.FindObjectsOfTypeAll<Camera>().FirstOrDefault(cam => cam.CompareTag("LandingCamera"))?.gameObject;
 
         missedCP.gameObject.SetActive(false);
     }
@@ -32,6 +24,10 @@ public class LandingTrigger : MonoBehaviour
         PlayerController controller = other.GetComponent<PlayerController>();
         PlayerVisualController visual = other.GetComponent<PlayerVisualController>();
 
+        // ✅ Get cameras from ACTIVE PLAYER
+        GameObject landingCamera = visual.landingCamera;
+        GameObject mainCamera = visual.mainCamera;
+
         // Close jet
         visual.JetCloseAnimation();
         visual.StopJetAnimation();
@@ -43,25 +39,25 @@ public class LandingTrigger : MonoBehaviour
         controller.DisableControls();
         controller.ParticlesDisable();
 
-        // Switch camera
-        mainCamera.SetActive(false);
-        landingCamera.SetActive(true);
+        // ✅ Switch camera (correct one)
+        if (mainCamera != null) mainCamera.SetActive(false);
+        if (landingCamera != null) landingCamera.SetActive(true);
 
         // Trigger landing animation
         visual.TriggerLandingAnimation();
 
-        // ✅ Set result (IMPORTANT)
+        // ✅ Set result
         if (currentCP < totalCP)
         {
             Debug.Log("Level Failed! Missed checkpoints.");
-            visual.SetWin(false);   // will go to Sad Walk AFTER landing
+            visual.SetWin(false);
             missedCP.gameObject.SetActive(true);
             UI_Canvas.instance.ShowLevelFail();
         }
         else
         {
             Debug.Log("Player Landed Successfully!");
-            visual.SetWin(true);    // will go to Dance AFTER landing
+            visual.SetWin(true);
             UI_Canvas.instance.ShowLevelPass();
         }
 
