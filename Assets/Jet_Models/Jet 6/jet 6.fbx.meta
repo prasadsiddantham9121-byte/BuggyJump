@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5810eab891cd4e34491172453fa41889
+guid: 83979151fa6cb474e9e8bf8d7569b1db
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,8 +7,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: JetPack
-    second: {fileID: 2100000, guid: 941512c1254d6164889aa82374c3b038, type: 2}
+      name: Material.003
+    second: {fileID: 2100000, guid: 1af557e5626093e45aca880541d99f14, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.004
+    second: {fileID: 2100000, guid: 175889b51ad4895438f23b138ede830f, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 6b3d78ce4e62442f85a1f4ea64024f28_R_Wings_RobotWings_Roughness
+    second: {fileID: 2800000, guid: f7457a8b33d27c4468d279cec37a7ea7, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

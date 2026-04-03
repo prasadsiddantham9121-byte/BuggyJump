@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4fd0566e919ba7746a63cae961dad0c2
+guid: f7fb74d9c93b8ec49b45444df59b4fe4
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,8 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: BlackBlue
-    second: {fileID: 2100000, guid: b8213e56f34f61e4aa0da19f4f7c98e2, type: 2}
+      name: Material.001
+    second: {fileID: 2100000, guid: d419b61baf1deea45b6fdcbba069585f, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 9259846135a84d178d1f6cf378008e08_RGB_Jetpack_Albedo.tga
+    second: {fileID: 2800000, guid: c509ee5d45f9ea84fa18811624b2493f, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

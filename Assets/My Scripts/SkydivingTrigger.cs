@@ -20,12 +20,17 @@ public class SkydivingTrigger : MonoBehaviour
 
             int index = 1;
 
-            other.GetComponent<PlayerVisualController>().SetJet(index);
+            other.GetComponent<PlayerVisualController>().SetJet();
             
 
             other.GetComponent<PlayerVisualController>().TriggerFlyingAnimation();
 
             other.GetComponent<PlayerController>().EnableControls();
+
+            if(other.GetComponent<PlayerVisualController>().jet.hasOpenClose)
+            {
+                other.GetComponent<PlayerVisualController>().JetOpenAnimation();
+            }
 
             other.GetComponent<PlayerVisualController>().JetOpenAnimation();
             other.GetComponent<PlayerController>().ParticlesEnable();

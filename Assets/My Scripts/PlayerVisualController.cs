@@ -16,8 +16,7 @@ public class PlayerVisualController : MonoBehaviour
         public bool hasOpenClose; // ✅ true = open/close, false = single animation
     }
 
-    public JetData[] jets;
-    private int currentJetIndex;
+    public JetData jet; // ✅ ONLY ONE JET
 
     //======================================== Player ======================================================================
 
@@ -121,21 +120,18 @@ public class PlayerVisualController : MonoBehaviour
 
     // ===================== JET FUNCTIONS =====================
 
-    public void SetJet(int index)
+    public void SetJet()
     {
-        currentJetIndex = index;
-
-        jetAnimator.runtimeAnimatorController = jets[index].overrideController;
-
-        // ✅ Resume animation (important if previously stopped)
+        jetAnimator.runtimeAnimatorController = jet.overrideController;
         jetAnimator.speed = 1f;
 
-        // ✅ If jet has only ONE animation (swing type)
-        if (!jets[index].hasOpenClose)
+        // ✅ For spin jet
+        if (!jet.hasOpenClose)
         {
-            jetAnimator.Play("Jet_Open_Anim",0,0); // plays swing animation
+            jetAnimator.Play("Jet_Open_Anim", 0, 0f);
         }
     }
+
 
     public void JetOpenAnimation()
     {
@@ -145,7 +141,8 @@ public class PlayerVisualController : MonoBehaviour
     IEnumerator JetOpenWithDelay()
     {
         yield return new WaitForSeconds(1.5f);
-        if (jets[currentJetIndex].hasOpenClose)
+
+        if (jet.hasOpenClose)
         {
             jetAnimator.SetTrigger("Jet_Open");
         }
@@ -153,24 +150,20 @@ public class PlayerVisualController : MonoBehaviour
 
     public void JetCloseAnimation()
     {
-        Debug.Log("Jet Close Called");
-        Debug.Log("hasOpenClose = " + jets[currentJetIndex].hasOpenClose);
-
-
-        if (jets[currentJetIndex].hasOpenClose)
+        if (jet.hasOpenClose)
         {
             jetAnimator.SetTrigger("Jet_Close");
         }
     }
 
-    // ✅ STOP ONLY FOR SINGLE ANIMATION JETS
     public void StopJetAnimation()
     {
-        if (!jets[currentJetIndex].hasOpenClose)
+        if (!jet.hasOpenClose)
         {
             jetAnimator.speed = 0f;
         }
     }
+
 
     //======================================================= Activating Ragdoll ===========================================
     private void OnCollisionEnter(Collision collision)
