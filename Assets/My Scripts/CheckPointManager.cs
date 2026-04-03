@@ -71,6 +71,26 @@ public class CheckPointManager : MonoBehaviour
 
     void LoadLevel(int levelIndex)
     {
+
+        // 🔥 STEP 1: DISABLE EVERYTHING FROM ALL LEVELS
+        foreach (var lvl in levelsCheckPoints)
+        {
+            foreach (var cp in lvl.checkpoints)
+            {
+                if (cp != null)
+                    cp.SetActive(false);
+            }
+        }
+
+        foreach (var lvl in levelRings)
+        {
+            foreach (var ring in lvl.rings)
+            {
+                if (ring != null)
+                    ring.SetActive(false);
+            }
+        }
+
         currentLevel = levelIndex;
 
         PlayerPrefs.SetInt("CheckPoint", 0);
