@@ -4,10 +4,13 @@ using System.Collections;
 
 public class LandingTrigger : MonoBehaviour
 {
+    
+
     public TextMeshProUGUI missedCP;
 
     private CheckPointManager cpManager;
 
+   
     private void Start()
     {
         cpManager = FindObjectOfType<CheckPointManager>();
@@ -33,7 +36,9 @@ public class LandingTrigger : MonoBehaviour
         visual.StopJetAnimation();
 
         int totalCP = cpManager.levelsCheckPoints[cpManager.currentLevel].checkpoints.Length;
-        int currentCP = PlayerPrefs.GetInt("CheckPoint");
+        //int currentCP = PlayerPrefs.GetInt("CheckPoint");
+
+        int currentCP = cpManager.GetCurrentCheckpoint();
 
         // Disable player controls
         controller.DisableControls();

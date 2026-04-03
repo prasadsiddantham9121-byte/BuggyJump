@@ -109,6 +109,7 @@ public class UI_Canvas : MonoBehaviour
 
     public void HomeButton()
     {
+        
         Time.timeScale = 1f;
         SceneManager.LoadScene(0);
     }
