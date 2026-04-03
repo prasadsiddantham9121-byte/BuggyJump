@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class SkydivingTrigger : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class SkydivingTrigger : MonoBehaviour
 
             print("player triggered");
 
-            int index = 1;
+            //int index = 1;
 
             other.GetComponent<PlayerVisualController>().SetJet();
             
@@ -40,6 +41,14 @@ public class SkydivingTrigger : MonoBehaviour
         
             UI_Canvas.instance.inGameUI.SetActive(true);
             UI_Canvas.instance.SetCutsceneState(false);
+
+            StartCoroutine(DelayToDisableObject());
         }
+    }
+
+    IEnumerator DelayToDisableObject()
+    {
+        yield return new WaitForSeconds(5f);
+        gameObject.SetActive(false);
     }
 }

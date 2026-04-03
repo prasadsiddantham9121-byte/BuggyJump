@@ -9,6 +9,10 @@ public class PlayerVisualController : MonoBehaviour
     public Animator playerAnimator;
     public Animator jetAnimator;
 
+    [Header("Camera SetUp")]
+    public GameObject landingCamera;
+    public GameObject mainCamera;
+
     [System.Serializable]
     public class JetData
     {
