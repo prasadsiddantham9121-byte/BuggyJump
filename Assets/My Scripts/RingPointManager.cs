@@ -172,7 +172,7 @@ public class RingPointManager : MonoBehaviour
     {
         if (landingPoint == null) return;
 
-        // Get first (and only) child
+        
         if (landingPoint.childCount > 0)
         {
             landingPoint.GetChild(0).gameObject.SetActive(true);
@@ -195,6 +195,6 @@ public class RingPointManager : MonoBehaviour
 
         landingPoint.GetChild(0).gameObject.SetActive(false);
 
-        Debug.Log("Landing Effect OFF"); // ✅ debug confirm
+        Debug.Log("Landing Effect OFF"); 
     }
 }
