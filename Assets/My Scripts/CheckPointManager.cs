@@ -1,272 +1,166 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 
 public class CheckPointManager : MonoBehaviour
 {
     public static CheckPointManager instance;
 
-    [System.Serializable]
-    public class LevelCheckpoints
-    {
-        public GameObject[] checkpoints;
-    }
+    [Header("Checkpoints (Single Level Only)")]
+    public GameObject[] checkpoints;
 
-    [System.Serializable]
-    public class LevelRings
-    {
-        public GameObject[] rings;
-    }
+    private int totalCheckpoints;
+    private int currentCheckpoints = 0;
 
-    public List<LevelCheckpoints> levelsCheckPoints = new List<LevelCheckpoints>();
-    public List<LevelRings> levelRings = new List<LevelRings>();
+    [Header("UI")]
+    public GameObject cpBG;
+    public TextMeshProUGUI cpText;
 
-    [Header("CheckPoint UI")]
-    public TextMeshProUGUI Current_CP;
-    public TextMeshProUGUI Total_CP;
-
-    [Header("Ring UI")]
-    public TextMeshProUGUI Current_Rings;
-    public TextMeshProUGUI Total_Rings;
-
-    public int currentLevel = 0;
-
-    private int currentCheckPoint = 0;
-    private int ringsPassed = 0;
-
+    [Header("Arrow Settings")]
     public Transform arrow;
     public Transform player;
+    public Transform landingPoint;
 
-    public Transform[] landingSpots;
+   
+    private Transform currentTarget;
 
-    [Header("UI Backgrounds")]
-    public GameObject checkpointBG;
-    public GameObject ringBG;
-
-    public enum LevelType
+    private void Awake()
     {
-        Checkpoints,
-        Rings
-    }
-
-    public LevelType levelType;
-
-    void Awake()
-    {
-        instance = this;
-    }
-
-    void Start()
-    {
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-
-        if (playerObj != null)
-            player = playerObj.transform;
+        if (instance == null)
+            instance = this;
         else
-            Debug.LogError("Player not found!");
-
-        //LoadLevel(currentLevel);
-
-        currentLevel = PlayerPrefs.GetInt(StringsData.levelToLoad, 0);
-        LoadLevel(currentLevel);
+            Destroy(gameObject);
     }
 
-    void LoadLevel(int levelIndex)
+    private void Start()
     {
+       
 
-        if (levelIndex >= levelsCheckPoints.Count || levelIndex >= levelRings.Count)
+        FindPlayer();
+        SetupCheckpoints();
+    }
+
+    private void Update()
+    {
+        UpdateArrow();
+    }
+
+    void SetupCheckpoints()
+    {
+        currentCheckpoints = 0;
+
+        if (checkpoints == null || checkpoints.Length == 0)
         {
-            Debug.LogError("Invalid Level Index: " + levelIndex);
+            Debug.LogWarning("No checkpoints assigned!");
+            cpBG.SetActive(false);
             return;
         }
 
-        currentLevel = levelIndex;
+        cpBG.SetActive(true);
 
-        //Debug.Log("Loading Level: " + currentLevel);
+        totalCheckpoints = checkpoints.Length;
+        UpdateUI();
 
-        Debug.Log("Loading Level: " + currentLevel);
-
-        // 🔥 Disable everything first
-        foreach (var lvl in levelsCheckPoints)
+        // Disable all first
+        foreach (var cp in checkpoints)
         {
-            foreach (var cp in lvl.checkpoints)
-            {
-                if (cp != null)
-                    cp.SetActive(false);
-            }
+            if (cp != null)
+                cp.SetActive(false);
         }
 
-        foreach (var lvl in levelRings)
+        // Activate first checkpoint
+        checkpoints[0].SetActive(true);
+
+        // Set arrow target
+        currentTarget = checkpoints[0].transform;
+    }
+
+    public void CollectCheckpoint(GameObject collectedCP)
+    {
+        collectedCP.SetActive(false);
+
+        currentCheckpoints++;
+        UpdateUI();
+
+        if (currentCheckpoints < totalCheckpoints)
         {
-            foreach (var ring in lvl.rings)
-            {
-                if (ring != null)
-                    ring.SetActive(false);
-            }
-        }
-
-        currentLevel = levelIndex;
-        currentCheckPoint = 0;
-        ringsPassed = 0;
-
-        var checkpoints = levelsCheckPoints[currentLevel].checkpoints;
-        var rings = levelRings[currentLevel].rings;
-
-        // 🔥 Detect level type
-        if (checkpoints.Length > 0)
-            levelType = LevelType.Checkpoints;
-        else
-            levelType = LevelType.Rings;
-
-        // UI switch
-        checkpointBG.SetActive(levelType == LevelType.Checkpoints);
-        ringBG.SetActive(levelType == LevelType.Rings);
-
-        Current_CP.gameObject.SetActive(levelType == LevelType.Checkpoints);
-        Total_CP.gameObject.SetActive(levelType == LevelType.Checkpoints);
-
-        Current_Rings.gameObject.SetActive(levelType == LevelType.Rings);
-        Total_Rings.gameObject.SetActive(levelType == LevelType.Rings);
-
-        int total = (levelType == LevelType.Checkpoints) ? checkpoints.Length : rings.Length;
-
-        if (levelType == LevelType.Checkpoints)
-        {
-            Total_CP.text = "/ " + total;
-            Current_CP.text = "0";
-
-            ActivateCheckpoint(0);
+            checkpoints[currentCheckpoints].SetActive(true);
+            currentTarget = checkpoints[currentCheckpoints].transform;
         }
         else
         {
-            Total_Rings.text = "/ " + total;
-            Current_Rings.text = "0";
+            Debug.Log("All checkpoints collected!");
 
-            foreach (var ring in rings)
-            {
-                ring.SetActive(true);
+            ActivateLandingEffect();
 
-                Collider col = ring.GetComponent<Collider>();
-                if (col != null) col.enabled = true;
-            }
-        }
-
-        // 🔥 Disable landing indicators
-        foreach (var spot in landingSpots)
-        {
-            if (spot != null && spot.childCount > 0)
-                spot.GetChild(0).gameObject.SetActive(false);
+            // 👉 Arrow goes to landing point
+            currentTarget = landingPoint;
         }
     }
 
-    void Update()
+    void UpdateUI()
     {
-        if (levelType == LevelType.Checkpoints)
+        if (cpText != null)
+            cpText.text = currentCheckpoints + " / " + totalCheckpoints;
+    }
+
+    void UpdateArrow()
+    {
+        if (arrow == null || player == null || currentTarget == null)
+            return;
+
+        Vector3 direction = currentTarget.position - player.position;
+        direction.y = 0;
+
+        if (direction != Vector3.zero)
         {
-            Current_CP.text = currentCheckPoint.ToString();
-
-            var checkpoints = levelsCheckPoints[currentLevel].checkpoints;
-
-            if (currentCheckPoint < checkpoints.Length)
-                UpdateArrowDirection(checkpoints[currentCheckPoint].transform);
-            else
-                UpdateArrowDirection(landingSpots[currentLevel]);
-        }
-        else
-        {
-            Current_Rings.text = ringsPassed.ToString();
-
-            var rings = levelRings[currentLevel].rings;
-
-            if (ringsPassed < rings.Length)
-                UpdateArrowDirection(rings[ringsPassed].transform);
-            else
-                UpdateArrowDirection(landingSpots[currentLevel]);
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            arrow.rotation = Quaternion.Slerp(arrow.rotation, targetRotation, Time.deltaTime * 5f);
         }
     }
 
-    // 🔥 ONLY activate needed checkpoint
-    void ActivateCheckpoint(int index)
+    void FindPlayer()
     {
-        var checkpoints = levelsCheckPoints[currentLevel].checkpoints;
-
-        for (int i = 0; i < checkpoints.Length; i++)
+        if (player == null)
         {
-            checkpoints[i].SetActive(i == index);
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+
+            if (playerObj != null)
+                player = playerObj.transform;
         }
     }
 
-    void UpdateArrowDirection(Transform target)
+    public bool AreAllCheckpointsCollected()
     {
-        if (player == null || target == null) return;
-
-        Vector3 dir = target.position - player.position;
-        float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
-
-        arrow.rotation = Quaternion.Euler(0, 0, -angle);
+        return currentCheckpoints >= totalCheckpoints;
     }
 
-    void ActivateLandingIndicator()
+    public int GetCurrent()
     {
-        if (landingSpots.Length > currentLevel)
-        {
-            Transform spot = landingSpots[currentLevel];
-
-            if (spot != null && spot.childCount > 0)
-                spot.GetChild(0).gameObject.SetActive(true);
-        }
-
-        Debug.Log("Go to Landing Area!");
+        return currentCheckpoints;
     }
 
-    // ---------------- CHECKPOINT ----------------
-    public void CollectCheckpoint()
+    public int GetTotal()
     {
-        if (levelType != LevelType.Checkpoints) return;
+        return totalCheckpoints;
+    }
 
-        currentCheckPoint++;
 
-        PlayerPrefs.SetInt("CheckPoint", currentCheckPoint);
+    void ActivateLandingEffect()
+    {
+        if (landingPoint == null) return;
 
-        var checkpoints = levelsCheckPoints[currentLevel].checkpoints;
-
-        if (currentCheckPoint < checkpoints.Length)
+        // Get first (and only) child
+        if (landingPoint.childCount > 0)
         {
-            ActivateCheckpoint(currentCheckPoint);
-        }
-        else
-        {
-            ActivateLandingIndicator();
+            landingPoint.GetChild(0).gameObject.SetActive(true);
         }
     }
 
-    // ---------------- RING ----------------
-    public void CollectRing(GameObject ring)
+    public void DiActivateLandingEffect()
     {
-        if (levelType != LevelType.Rings) return;
-
-        ringsPassed++;
-
-        Collider col = ring.GetComponent<Collider>();
-        if (col != null)
-            col.enabled = false;
-
-        var rings = levelRings[currentLevel].rings;
-
-        if (ringsPassed >= rings.Length)
+        if (landingPoint.childCount > 0)
         {
-            ActivateLandingIndicator();
+            landingPoint.GetChild(0).gameObject.SetActive(false);
         }
-    }
-
-    public void SetLevel(int levelIndex)
-    {
-        LoadLevel(levelIndex);
-    }
-
-    public int GetCurrentCheckpoint()
-    {
-        return currentCheckPoint;
     }
 }

@@ -1,23 +1,13 @@
 ﻿using UnityEngine;
 using TMPro;
-using System.Collections.Generic;
 
 public class RingPointManager : MonoBehaviour
 {
     public static RingPointManager instance;
 
-    [System.Serializable]
-    public class LevelRings
-    {
-        public GameObject[] rings;
-    }
+    [Header("Rings in this Level")]
+    public GameObject[] rings;
 
-    [Header("All Levels")]
-    public List<LevelRings> levels = new List<LevelRings>();
-
-    private int currentLevelIndex;
-
-    private GameObject[] rings;
     private int totalRings;
     private int collectedRings = 0;
 
@@ -32,7 +22,7 @@ public class RingPointManager : MonoBehaviour
 
     private Transform currentTarget;
 
-    public GameObject checkPointManager;
+    //public GameObject checkPointManager;
 
     private void Awake()
     {
@@ -44,9 +34,7 @@ public class RingPointManager : MonoBehaviour
 
     private void Start()
     {
-        checkPointManager.SetActive(false);
-
-        currentLevelIndex = PlayerPrefs.GetInt("levelToLoad", 0);
+        //checkPointManager.SetActive(false);
 
         FindPlayer();
         SetupLevel();
@@ -61,18 +49,9 @@ public class RingPointManager : MonoBehaviour
     {
         collectedRings = 0;
 
-        if (levels.Count == 0 || currentLevelIndex >= levels.Count)
-        {
-            Debug.LogWarning("No ring level data!");
-            ringBG.SetActive(false);
-            return;
-        }
-
-        rings = levels[currentLevelIndex].rings;
-
         if (rings == null || rings.Length == 0)
         {
-            Debug.Log("No rings in this level");
+            Debug.LogWarning("No rings assigned!");
             ringBG.SetActive(false);
             return;
         }
@@ -82,14 +61,14 @@ public class RingPointManager : MonoBehaviour
         totalRings = rings.Length;
         UpdateUI();
 
-        // ✅ Activate ALL rings at once
+        // Activate all rings
         foreach (var ring in rings)
         {
             if (ring != null)
                 ring.SetActive(true);
         }
 
-        // 👉 Set first nearest target
+        // Find first nearest ring
         UpdateNearestRing();
     }
 
@@ -100,14 +79,11 @@ public class RingPointManager : MonoBehaviour
 
         if (collectedRings < totalRings)
         {
-            // 👉 Find next nearest ring
             UpdateNearestRing();
         }
         else
         {
             Debug.Log("All rings collected!");
-
-            // 👉 Switch to landing point
             currentTarget = landingPoint;
         }
     }
@@ -180,4 +156,7 @@ public class RingPointManager : MonoBehaviour
     {
         return totalRings;
     }
+
+
+    // ================================================== Rings And Checkpoints problem Fixed =================================================
 }
