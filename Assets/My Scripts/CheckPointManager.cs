@@ -66,11 +66,25 @@ public class CheckPointManager : MonoBehaviour
         else
             Debug.LogError("Player not found!");
 
+        //LoadLevel(currentLevel);
+
+        currentLevel = PlayerPrefs.GetInt(StringsData.levelToLoad, 0);
         LoadLevel(currentLevel);
     }
 
     void LoadLevel(int levelIndex)
     {
+
+        if (levelIndex >= levelsCheckPoints.Count || levelIndex >= levelRings.Count)
+        {
+            Debug.LogError("Invalid Level Index: " + levelIndex);
+            return;
+        }
+
+        currentLevel = levelIndex;
+
+        //Debug.Log("Loading Level: " + currentLevel);
+
         Debug.Log("Loading Level: " + currentLevel);
 
         // 🔥 Disable everything first
@@ -213,6 +227,8 @@ public class CheckPointManager : MonoBehaviour
 
         currentCheckPoint++;
 
+        PlayerPrefs.SetInt("CheckPoint", currentCheckPoint);
+
         var checkpoints = levelsCheckPoints[currentLevel].checkpoints;
 
         if (currentCheckPoint < checkpoints.Length)
@@ -242,5 +258,15 @@ public class CheckPointManager : MonoBehaviour
         {
             ActivateLandingIndicator();
         }
+    }
+
+    public void SetLevel(int levelIndex)
+    {
+        LoadLevel(levelIndex);
+    }
+
+    public int GetCurrentCheckpoint()
+    {
+        return currentCheckPoint;
     }
 }

@@ -17,15 +17,15 @@ public class PlayerVisualController : MonoBehaviour
     public class JetData
     {
         public AnimatorOverrideController overrideController;
-        public bool hasOpenClose; // ✅ true = open/close, false = single animation
+        public bool hasOpenClose;
     }
 
-    public JetData jet; // ✅ ONLY ONE JET
+    public JetData jet;
 
     //======================================== Player ======================================================================
 
-    public GameObject playerModel;   // your current animated player
-    public GameObject ragdollModel;  // ragdoll version
+    public GameObject playerModel;  
+    public GameObject ragdollModel;  
 
     public Transform playerHips;
     public Transform ragdollHips;
@@ -38,7 +38,7 @@ public class PlayerVisualController : MonoBehaviour
     private bool isRagdollActive = false;
 
 
-    // Start is called before the first frame update
+   
     void Start()
     {
 
@@ -52,11 +52,11 @@ public class PlayerVisualController : MonoBehaviour
         playerAnimator = GetComponentInChildren<Animator>();
         playerRB = GetComponent<Rigidbody>();
 
-        // ✅ ASSIGN FIRST
+       
         capsule = GetComponent<CapsuleCollider>();
         boxCollider = GetComponent<BoxCollider>();
 
-        // ✅ Safety check
+       
         if (capsule == null)
         {
             Debug.LogError("CapsuleCollider missing on Player!");
@@ -69,7 +69,7 @@ public class PlayerVisualController : MonoBehaviour
             return;
         }
 
-        // ✅ THEN use them
+       
         capsule.enabled = true;
         boxCollider.enabled = false;
     }
@@ -90,7 +90,7 @@ public class PlayerVisualController : MonoBehaviour
         playerAnimator.SetBool("Flying", true);
 
        
-        // Switch colliders
+        
         capsule.enabled = false;
         boxCollider.enabled = true;
     }
@@ -129,7 +129,7 @@ public class PlayerVisualController : MonoBehaviour
         jetAnimator.runtimeAnimatorController = jet.overrideController;
         jetAnimator.speed = 1f;
 
-        // ✅ For spin jet
+       
         if (!jet.hasOpenClose)
         {
             jetAnimator.Play("Jet_Open_Anim", 0, 0f);
@@ -178,7 +178,7 @@ public class PlayerVisualController : MonoBehaviour
             PlayerController player = GetComponent<PlayerController>();
             if (player != null)
             {
-                player.DisableControls(); // 👈 disable controls here
+                player.DisableControls(); 
             }
 
         }
@@ -189,19 +189,19 @@ public class PlayerVisualController : MonoBehaviour
         if (isRagdollActive) return;
         isRagdollActive = true;
 
-        // Disable animator
+       
         playerAnimator.enabled = false;
 
-        // Disable player colliders (VERY IMPORTANT)
+        
         capsule.enabled = false;
         boxCollider.enabled = false;
 
-        // Disable player visuals
+       
         playerModel.SetActive(false);
 
         TimeManager.instance.StopTimer();
 
-        // ✅ FIND SAFE GROUND POSITION USING RAYCAST
+       
         RaycastHit hit;
         Vector3 startPos = playerHips.position + Vector3.up * 1.5f;
 
@@ -214,13 +214,13 @@ public class PlayerVisualController : MonoBehaviour
             ragdollModel.transform.position = playerHips.position + Vector3.up * 0.3f;
         }
 
-        // Match rotation
+      
         ragdollModel.transform.rotation = playerHips.rotation;
 
-        // Enable ragdoll
+       
         ragdollModel.SetActive(true);
 
-        // Enable physics on ragdoll
+       
         Rigidbody[] ragdollBodies = ragdollModel.GetComponentsInChildren<Rigidbody>();
 
         foreach (Rigidbody rb in ragdollBodies)
@@ -229,17 +229,17 @@ public class PlayerVisualController : MonoBehaviour
             rb.useGravity = true;
         }
 
-        // ✅ APPLY VELOCITY SAFELY (prevents glitch/explosion)
+       
         StartCoroutine(ApplyVelocityDelayed());
 
-        // ✅ SWITCH CAMERA
+       
         CameraFollow cam = FindObjectOfType<CameraFollow>();
         if (cam != null)
         {
             cam.SetTarget(ragdollHips);
         }
 
-        // Disable player control
+       
         PlayerController player = GetComponent<PlayerController>();
         if (player != null)
         {
