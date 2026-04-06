@@ -20,9 +20,13 @@ public class CheckPointManager : MonoBehaviour
     public Transform player;
     public Transform landingPoint;
 
-   
+    [Header("Fade")]
+    public ScreenFader screenFader;
+
     private Transform currentTarget;
 
+    public Transform startPoint;
+    public Transform endPoint;
     private void Awake()
     {
         if (instance == null)
@@ -100,6 +104,7 @@ public class CheckPointManager : MonoBehaviour
 
             // 👉 Arrow goes to landing point
             currentTarget = landingPoint;
+            PlayerController.instance.DoLandingToResultsPos();
         }
     }
 

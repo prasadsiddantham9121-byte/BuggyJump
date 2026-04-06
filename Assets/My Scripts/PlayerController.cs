@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using DG.Tweening;
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController instance;
@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
 
     
     private bool isBoosting = false;
-
+    public bool isResults;
     void Awake()
     {
         instance = this;
@@ -48,6 +48,8 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
+        if (isResults)
+            return;
         // Multiply speed instead of replacing
         float currentSpeed = isBoosting ? speedMovement * boostMultiplier : speedMovement;
 
@@ -148,7 +150,20 @@ public class PlayerController : MonoBehaviour
         speedEffect.SetActive(false);
 
     }
+    public void DoLandingToResultsPos()
+    {
+        isResults = true;
+        Transform startPt = CheckPointManager.instance.startPoint;
+        Transform endPt = CheckPointManager.instance.endPoint;
 
-    
+        transform.eulerAngles = Vector3.zero;
+        transform.position = startPt.position;
+
+        transform.DOMove(endPt.position, 2).onComplete+=PlayDancingAnimation;
+    }
+    public void PlayDancingAnimation()
+    {
+
+    }
 
 }
