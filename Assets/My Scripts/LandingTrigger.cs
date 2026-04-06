@@ -20,6 +20,11 @@ public class LandingTrigger : MonoBehaviour
         PlayerController controller = other.GetComponent<PlayerController>();
         PlayerVisualController visual = other.GetComponent<PlayerVisualController>();
 
+        if (visual != null)
+        {
+            visual.OnLevelComplete(); // 🔥 THIS LINE IS REQUIRED
+        }
+
         // ✅ Cameras
         GameObject landingCamera = visual.landingCamera;
         GameObject mainCamera = visual.mainCamera;
@@ -41,13 +46,18 @@ public class LandingTrigger : MonoBehaviour
         // ✅ Stop timer
         TimeManager.instance.StopTimer();
 
-       CheckPointManager.instance.DiActivateLandingEffect();
+        if (CheckPointManager.instance != null)
+        {
+            CheckPointManager.instance.DiActivateLandingEffect();
+        }
+        Debug.Log("Checkpoint instance: " + CheckPointManager.instance);
+        Debug.Log("Ring instance: " + RingPointManager.instance);
 
         // ================= LEVEL RESULT =================
 
-        
+
         if (CheckPointManager.instance != null &&
-            CheckPointManager.instance.gameObject.activeInHierarchy)
+            CheckPointManager.instance.GetTotal() > 0)
         {
             if (CheckPointManager.instance.AreAllCheckpointsCollected())
             {
@@ -73,8 +83,13 @@ public class LandingTrigger : MonoBehaviour
         }
 
         else if (RingPointManager.instance != null &&
-                 RingPointManager.instance.gameObject.activeInHierarchy)
+                  RingPointManager.instance.GetTotal() > 0)
         {
+
+            if(RingPointManager.instance !=null &&
+                RingPointManager.instance.GetTotal() > 0)
+
+
             if (RingPointManager.instance.AreAllRingsCollected())
             {
                 print("Level Pass");

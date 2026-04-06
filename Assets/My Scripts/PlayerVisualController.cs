@@ -37,8 +37,8 @@ public class PlayerVisualController : MonoBehaviour
 
     private bool isRagdollActive = false;
 
+    private bool isLevelFinished = false;
 
-   
     void Start()
     {
 
@@ -159,10 +159,21 @@ public class PlayerVisualController : MonoBehaviour
         }
     }
 
+    public void OnLevelComplete()
+    {
+        isLevelFinished = true;
+
+        // Optional: stop movement physics cleanly
+        playerRB.velocity = Vector3.zero;
+        playerRB.angularVelocity = Vector3.zero;
+        playerRB.isKinematic = true;
+    }
 
     //======================================================= Activating Ragdoll ===========================================
     private void OnCollisionEnter(Collision collision)
     {
+        if (isLevelFinished) return;
+
         if (collision.gameObject.CompareTag("Ground"))
         {
             ActivateRagdoll();
@@ -177,7 +188,7 @@ public class PlayerVisualController : MonoBehaviour
 
     public void ActivateRagdoll()
     {
-        if (isRagdollActive) return;
+        if (isRagdollActive || isLevelFinished) return;
         isRagdollActive = true;
 
        

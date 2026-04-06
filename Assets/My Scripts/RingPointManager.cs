@@ -32,6 +32,12 @@ public class RingPointManager : MonoBehaviour
             Destroy(gameObject);
     }
 
+    private void OnDestroy()
+    {
+        if (instance == this)
+            instance = null;
+    }
+
     private void Start()
     {
         //checkPointManager.SetActive(false);
@@ -74,6 +80,8 @@ public class RingPointManager : MonoBehaviour
 
     public void CollectRing(GameObject ringObj)
     {
+        if (!ringObj.activeSelf) return;
+
         collectedRings++;
         UpdateUI();
 
@@ -84,6 +92,9 @@ public class RingPointManager : MonoBehaviour
         else
         {
             Debug.Log("All rings collected!");
+
+            RingActivateLandingEffect();
+
             currentTarget = landingPoint;
         }
     }
@@ -144,7 +155,7 @@ public class RingPointManager : MonoBehaviour
 
     public bool AreAllRingsCollected()
     {
-        return collectedRings >= totalRings;
+        return collectedRings == totalRings;
     }
 
     public int GetCurrent()
@@ -157,6 +168,33 @@ public class RingPointManager : MonoBehaviour
         return totalRings;
     }
 
+    void RingActivateLandingEffect()
+    {
+        if (landingPoint == null) return;
 
-    // ================================================== Rings And Checkpoints problem Fixed =================================================
+        // Get first (and only) child
+        if (landingPoint.childCount > 0)
+        {
+            landingPoint.GetChild(0).gameObject.SetActive(true);
+        }
+    }
+
+    public void RingOffLandingEffect()
+    {
+        if (landingPoint == null)
+        {
+            Debug.LogError("LandingPoint NOT assigned!");
+            return;
+        }
+
+        if (landingPoint.childCount == 0)
+        {
+            Debug.LogError("LandingPoint has NO child!");
+            return;
+        }
+
+        landingPoint.GetChild(0).gameObject.SetActive(false);
+
+        Debug.Log("Landing Effect OFF"); // ✅ debug confirm
+    }
 }

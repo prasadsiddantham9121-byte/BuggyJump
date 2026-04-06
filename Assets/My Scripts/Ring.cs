@@ -17,12 +17,11 @@ public class Ring : MonoBehaviour
         {
             collected = true;
 
-
-
             ringCollider.enabled = false;
 
-
             RingPointManager.instance.CollectRing(gameObject);
+
+            gameObject.SetActive(false);
         }
     }
 }
