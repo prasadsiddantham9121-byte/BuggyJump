@@ -13,7 +13,7 @@ public class CheckPointTrigger : MonoBehaviour
 
         isCollected = true;
 
-        CheckPointManagered.instance.CollectCheckpoint(gameObject);
+        CheckPointManager.instance.CollectCheckpoint(gameObject);
     }
 
 

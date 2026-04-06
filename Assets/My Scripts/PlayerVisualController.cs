@@ -107,17 +107,8 @@ public class PlayerVisualController : MonoBehaviour
         boxCollider.enabled = false;
     }
 
-    public void SadWalk()
-    {
-        playerAnimator.SetBool("IsWin", false);
-    }
-    
-    public void HappyDance()
-    {
-        playerAnimator.SetBool("IsWin", true);
-    }
-
-    public void SetWin(bool win)
+   
+    public void PlayResult(bool win)
     {
         playerAnimator.SetBool("IsWin", win);
     }
