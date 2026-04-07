@@ -25,8 +25,7 @@ public class CheckPointManager : MonoBehaviour
 
     private Transform currentTarget;
 
-    public Transform startPoint;
-    public Transform endPoint;
+
     private void Awake()
     {
         if (instance == null)
@@ -104,7 +103,7 @@ public class CheckPointManager : MonoBehaviour
 
             // 👉 Arrow goes to landing point
             currentTarget = landingPoint;
-            PlayerController.instance.DoLandingToResultsPos();
+            //PlayerController.instance.DoLandingToResultsPos();
         }
     }
 

@@ -153,17 +153,70 @@ public class PlayerController : MonoBehaviour
     public void DoLandingToResultsPos()
     {
         isResults = true;
-        Transform startPt = CheckPointManager.instance.startPoint;
-        Transform endPt = CheckPointManager.instance.endPoint;
+        Transform startPt = LandingTrigger.instance.startPoint;
+        Transform endPt = LandingTrigger.instance.endPoint;
 
-        transform.eulerAngles = Vector3.zero;
+        //transform.eulerAngles = Vector3.zero;
+        transform.rotation = startPt.rotation;
         transform.position = startPt.position;
 
-        transform.DOMove(endPt.position, 2).onComplete+=PlayDancingAnimation;
+        transform.DOMove(endPt.position, 0.8f).onComplete+=OnReachedEndPoint;
     }
-    public void PlayDancingAnimation()
-    {
 
+
+    void OnReachedEndPoint()
+    {
+        PlayerVisualController visual = GetComponent<PlayerVisualController>();
+
+        if (visual == null) return;
+
+        // ================= LEVEL RESULT =================
+
+        if (CheckPointManager.instance != null &&
+            CheckPointManager.instance.GetTotal() > 0)
+        {
+            if (CheckPointManager.instance.AreAllCheckpointsCollected())
+            {
+                visual.PlayResult(true);
+                UI_Canvas.instance.ShowLevelPass();
+            }
+            else
+            {
+                visual.PlayResult(false);
+
+                int missed = CheckPointManager.instance.GetTotal() -
+                             CheckPointManager.instance.GetCurrent();
+
+                LandingTrigger.instance.missedCP.gameObject.SetActive(true);
+                LandingTrigger.instance.missedCP.text =
+                    " You Missed " + missed + " CheckPoints! ";
+
+                UI_Canvas.instance.ShowLevelFail();
+            }
+        }
+        else if (RingPointManager.instance != null &&
+                 RingPointManager.instance.GetTotal() > 0)
+        {
+            if (RingPointManager.instance.AreAllRingsCollected())
+            {
+                visual.PlayResult(true);
+                UI_Canvas.instance.ShowLevelPass();
+            }
+            else
+            {
+                visual.PlayResult(false);
+
+                int missed = RingPointManager.instance.GetTotal() -
+                             RingPointManager.instance.GetCurrent();
+
+                LandingTrigger.instance.missedCP.gameObject.SetActive(true);
+                LandingTrigger.instance.missedCP.text =
+                    " You Missed " + missed + " Rings! ";
+
+                UI_Canvas.instance.ShowLevelFail();
+            }
+        }
     }
+    
 
 }

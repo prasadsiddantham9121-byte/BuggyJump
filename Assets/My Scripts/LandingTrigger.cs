@@ -4,16 +4,35 @@ using System.Collections;
 
 public class LandingTrigger : MonoBehaviour
 {
+    public static LandingTrigger instance;
+
+    private ScreenFader screenFader;
+
     public TextMeshProUGUI missedCP;
+
+    public Transform startPoint;
+    public Transform endPoint;
+
+    private bool hasTriggered = false;
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+    }
 
     private void Start()
     {
+        screenFader = FindObjectOfType<ScreenFader>();
         missedCP.gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
+
+        hasTriggered = true;
+        GetComponent<Collider>().enabled = false;
 
         Debug.Log("Player Landed Here");
 
@@ -41,10 +60,18 @@ public class LandingTrigger : MonoBehaviour
         if (landingCamera != null) landingCamera.SetActive(true);
 
         // ✅ Landing animation
-        visual.TriggerLandingAnimation();
+        
 
         // ✅ Stop timer
         TimeManager.instance.StopTimer();
+
+        //StartCoroutine(screenFader.FadeOut());
+
+        //visual.TriggerLandingAnimation();
+
+        //controller.DoLandingToResultsPos();
+
+        StartCoroutine(HandleLandingSequence(controller, visual));
 
         if (CheckPointManager.instance != null)
         {
@@ -52,80 +79,25 @@ public class LandingTrigger : MonoBehaviour
         }
         Debug.Log("Checkpoint instance: " + CheckPointManager.instance);
         Debug.Log("Ring instance: " + RingPointManager.instance);
-
-        // ================= LEVEL RESULT =================
-
-
-        if (CheckPointManager.instance != null &&
-            CheckPointManager.instance.GetTotal() > 0)
-        {
-            if (CheckPointManager.instance.AreAllCheckpointsCollected())
-            {
-                print("Level Pass");
-
-                visual.PlayResult(true);
-
-                UI_Canvas.instance.ShowLevelPass();
-            }
-            else
-            {
-                print("Level Fail");
-
-                visual.PlayResult(false);
-
-                missedCP.gameObject.SetActive(true);
-
-                int missed = GetMissedCount();
-                missedCP.text = " You Missed " + missed + " CheckPoints! ";
-
-                UI_Canvas.instance.ShowLevelFail();
-            }
-        }
-
-        else if (RingPointManager.instance != null &&
-                  RingPointManager.instance.GetTotal() > 0)
-        {
-
-            if(RingPointManager.instance !=null &&
-                RingPointManager.instance.GetTotal() > 0)
-
-
-            if (RingPointManager.instance.AreAllRingsCollected())
-            {
-                print("Level Pass");
-                visual.PlayResult(true);
-                UI_Canvas.instance.ShowLevelPass();
-            }
-            else
-            {
-                print("Level Fail");
-
-                visual.PlayResult(false);
-
-
-                missedCP.gameObject.SetActive(true);
-
-                int missed = GetMissedRings();
-                missedCP.text = " You Missed " + missed + " Rings! ";
-
-                UI_Canvas.instance.ShowLevelFail();
-            }
-        }
     }
 
-    int GetMissedCount()
+    IEnumerator HandleLandingSequence(PlayerController controller, PlayerVisualController visual)
     {
-        if (CheckPointManager.instance == null) return 0;
+        //StopAllCoroutines();
 
-        return CheckPointManager.instance.GetTotal() -
-               CheckPointManager.instance.GetCurrent();
+        // Fade out first
+        yield return StartCoroutine(screenFader.FadeOut());
+       
+
+        // Then play landing animation
+        visual.TriggerLandingAnimation();
+       
+        // Small delay if needed
+        //yield return new WaitForSeconds(0.2f);
+
+        controller.DoLandingToResultsPos();
+
+        yield return StartCoroutine(screenFader.FadeIn(0.8f));
     }
 
-    int GetMissedRings()
-    {
-        if (RingPointManager.instance == null) return 0;
-
-        return RingPointManager.instance.GetTotal() -
-               RingPointManager.instance.GetCurrent();
-    }
 }
