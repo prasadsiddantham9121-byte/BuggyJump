@@ -1,58 +1,52 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
+using System;
+[System.Serializable]
+public class Sound
+{
+    public string name;
+    public AudioClip clip;
+    [Range(0f,1f)]
+    public float volume;
+    [Range(0f, 1f)]
+    public float pitch;
+    [HideInInspector]
+    public AudioSource source;
+    public bool loop;
+    //public bool PlayOneShot;
+}
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager instance;
-
-    public AudioSource audioSource;
-    public AudioClip passClip;
-    public AudioClip failClip;
-    public AudioClip carSoundClip;
-    public AudioClip skidClip;
-
     private void Awake()
     {
-        if (instance == null)
+        if (instance)
+        {
+            DestroyImmediate(this);
+        }
+        else
+        {
             instance = this;
-    }
 
-    public void CarSound()
-    {
-        audioSource.clip = carSoundClip;
-        audioSource.Play();
-        audioSource.loop = true;
-
+        }
+        foreach (Sound s in sounds)
+        {
+            s.source = gameObject.AddComponent<AudioSource>();
+            s.source.clip = s.clip;
+            s.source.volume = s.volume;
+            s.source.pitch = s.pitch;
+            s.source.loop = s.loop;
+            //s.source.PlayOneShot = s.PlayOneShot;
+        }
     }
-
-    public void PassSound()
+    public Sound[] sounds;
+    public void PlaySound(string name)
     {
-        audioSource.clip = passClip;
-        audioSource.Play();
-        audioSource.loop = false;
-    } 
-    
-    public void FailSound()
-    {
-        audioSource.clip = failClip;
-        audioSource.Play();
-        audioSource.loop = false;
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        s.source.Play(); 
     }
-    
-    public void SkidSoundStart()
+    public void StopSound(string name)
     {
-        audioSource.clip = skidClip;
-        audioSource.Play();
-        audioSource.loop = true;
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        s.source.Stop();
     }
-    
-    public void SkidSoundStop()
-    {
-        audioSource.clip = skidClip;
-        audioSource.Stop();
-        
-    }
-
-
 }

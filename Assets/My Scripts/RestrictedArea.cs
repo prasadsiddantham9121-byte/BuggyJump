@@ -3,7 +3,9 @@ using UnityEngine;
 public class RestrictedArea : MonoBehaviour
 {
     public string warningMessage = "Restricted Area!";
+    
 
+    
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -17,6 +19,14 @@ public class RestrictedArea : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             UI_Canvas.instance.HideWarning();
+
+            PlayerVisualController visualController = collision.gameObject.GetComponent<PlayerVisualController>();
+
+            if (visualController != null)
+            {
+                visualController.ActivateRagdoll();
+            }
+            
         }
     }
 }
