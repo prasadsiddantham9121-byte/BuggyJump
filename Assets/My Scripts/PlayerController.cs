@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Script;
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController instance;
@@ -29,15 +30,36 @@ public class PlayerController : MonoBehaviour
     
     private bool isBoosting = false;
     public bool isResults;
+
+    public Joystick joystick;
+
+    // ================= CONTROL MODE =================
+    public enum ControlMode
+    {
+        Auto,
+        TV,
+        Mobile,
+        Both
+    }
+
+    [Header("Control Mode")]
+    public ControlMode controlMode = ControlMode.Auto;
+
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+            instance = this;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        if (joystick == null  && UI_Canvas.instance != null)
+        {
+            joystick = UI_Canvas.instance.joystick;
+        }
     }
 
     // Update is called once per frame
@@ -45,36 +67,133 @@ public class PlayerController : MonoBehaviour
     {
         HandleMovement();
     }
+    
+    //void HandleMovement()
+    //{
+    //    if (isResults)
+    //        return;
+
+    //    float currentSpeed = isBoosting ? speedMovement * boostMultiplier : speedMovement;
+
+
+    //    transform.position += transform.forward * currentSpeed * Time.deltaTime;
+    //    if (AndroidTV.IsAndroidOrFireTv())
+    //    {
+
+
+    //        float horizontal = Input.GetAxis("Horizontal");
+    //        float vertical = Input.GetAxis("Vertical");
+
+    //        smoothHorizontal = Mathf.Lerp(smoothHorizontal, horizontal, inputSmoothSpeed * Time.deltaTime);
+    //        smoothVertical = Mathf.Lerp(smoothVertical, vertical, inputSmoothSpeed * Time.deltaTime);
+
+    //        yaw += smoothHorizontal * YawAmount * Time.deltaTime;
+
+    //        float pitch = Mathf.Lerp(0, 25f, Mathf.Abs(smoothVertical)) * -Mathf.Sign(smoothVertical);
+    //        float roll = Mathf.Lerp(0, 45f, Mathf.Abs(smoothHorizontal)) * -Mathf.Sign(smoothHorizontal);
+
+
+
+    //        Quaternion targetRotation = Quaternion.Euler(pitch, yaw, roll);
+
+    //        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 2.5f * Time.deltaTime);
+    //    }
+    //    else
+    //    {
+
+
+    //        float horizontal = joystick.Horizontal;
+    //        float vertical = joystick.Vertical;
+
+    //        smoothHorizontal = Mathf.Lerp(smoothHorizontal, horizontal, inputSmoothSpeed * Time.deltaTime);
+    //        smoothVertical = Mathf.Lerp(smoothVertical, vertical, inputSmoothSpeed * Time.deltaTime);
+
+    //        yaw += smoothHorizontal * YawAmount * Time.deltaTime;
+
+    //        float pitch = Mathf.Lerp(0, 25f, Mathf.Abs(smoothVertical)) * -Mathf.Sign(smoothVertical);
+    //        float roll = Mathf.Lerp(0, 45f, Mathf.Abs(smoothHorizontal)) * -Mathf.Sign(smoothHorizontal);
+
+    //        Quaternion targetRotation = Quaternion.Euler(pitch, yaw, roll);
+
+    //        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 2.5f * Time.deltaTime);
+    //    }
+    //}
 
     void HandleMovement()
     {
         if (isResults)
             return;
-        // Multiply speed instead of replacing
+
         float currentSpeed = isBoosting ? speedMovement * boostMultiplier : speedMovement;
 
-        // APPLY SPEED ✅
+        // Forward movement
         transform.position += transform.forward * currentSpeed * Time.deltaTime;
 
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        float horizontal = 0f;
+        float vertical = 0f;
 
+        // 🔥 CONTROL MODE HANDLING
+        switch (controlMode)
+        {
+            case ControlMode.TV:
+                horizontal = Input.GetAxis("Horizontal");
+                vertical = Input.GetAxis("Vertical");
+                break;
+
+            case ControlMode.Mobile:
+                if (joystick != null)
+                {
+                    horizontal = joystick.Horizontal;
+                    vertical = joystick.Vertical;
+                }
+                
+                break;
+
+            case ControlMode.Both:
+                float jH = joystick != null ? joystick.Horizontal : 0f;
+                float jV = joystick != null ? joystick.Vertical : 0f;
+
+                horizontal = Input.GetAxis("Horizontal") + jH;
+                vertical = Input.GetAxis("Vertical") + jV;
+                break;
+
+            case ControlMode.Auto:
+                if (AndroidTV.IsAndroidOrFireTv())
+                {
+                    horizontal = Input.GetAxis("Horizontal");
+                    vertical = Input.GetAxis("Vertical");
+                }
+                else
+                {
+                    if (joystick != null)
+                    {
+                        horizontal = joystick.Horizontal;
+                        vertical = joystick.Vertical;
+                    }
+                    
+                }
+                break;
+        }
+
+        // Clamp (important for BOTH mode)
+        horizontal = Mathf.Clamp(horizontal, -1f, 1f);
+        vertical = Mathf.Clamp(vertical, -1f, 1f);
+
+        // Smooth input
         smoothHorizontal = Mathf.Lerp(smoothHorizontal, horizontal, inputSmoothSpeed * Time.deltaTime);
         smoothVertical = Mathf.Lerp(smoothVertical, vertical, inputSmoothSpeed * Time.deltaTime);
 
+        // Rotation
         yaw += smoothHorizontal * YawAmount * Time.deltaTime;
 
         float pitch = Mathf.Lerp(0, 25f, Mathf.Abs(smoothVertical)) * -Mathf.Sign(smoothVertical);
         float roll = Mathf.Lerp(0, 45f, Mathf.Abs(smoothHorizontal)) * -Mathf.Sign(smoothHorizontal);
 
-       
-
         Quaternion targetRotation = Quaternion.Euler(pitch, yaw, roll);
-
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 2.5f * Time.deltaTime);
-
-        
     }
+
+    // ================= CONTROL ENABLE / DISABLE =================
 
     public void EnableControls()
     {
@@ -107,6 +226,8 @@ public class PlayerController : MonoBehaviour
        
     }
 
+    // ================= PARTICLES =================
+
     public void ParticlesEnable()
     {
         StartCoroutine(ShowPariclesWithDelay());
@@ -130,6 +251,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    // ================= BOOST =================
     public void ActivateBoost()
     {
         if (!isBoosting)
@@ -139,6 +262,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator BoostRoutine()
     {
         isBoosting = true;
+        SoundManager.instance.PlaySound("Booster");
         speedEffect.SetActive(true);
 
         // 💥 instant forward push
@@ -147,9 +271,13 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(boostDuration);
 
         isBoosting = false;
+        SoundManager.instance.StopSound("Booster");
         speedEffect.SetActive(false);
 
     }
+
+
+    // ================= LANDING =================
     public void DoLandingToResultsPos()
     {
         isResults = true;
@@ -177,8 +305,12 @@ public class PlayerController : MonoBehaviour
         {
             if (CheckPointManager.instance.AreAllCheckpointsCollected())
             {
+
                 visual.PlayResult(true);
                 UI_Canvas.instance.ShowLevelPass();
+                int levelCompletionReward = 50;
+                CoinManager.instance.AddLevelCompletionCoins(levelCompletionReward);
+
             }
             else
             {
@@ -187,11 +319,14 @@ public class PlayerController : MonoBehaviour
                 int missed = CheckPointManager.instance.GetTotal() -
                              CheckPointManager.instance.GetCurrent();
 
+                SoundManager.instance.StopSound("Flying");
+                SoundManager.instance.PlaySound("Level_Fail");
                 LandingTrigger.instance.missedCP.gameObject.SetActive(true);
                 LandingTrigger.instance.missedCP.text =
                     " You Missed " + missed + " CheckPoints! ";
 
                 UI_Canvas.instance.ShowLevelFail();
+
             }
         }
         else if (RingPointManager.instance != null &&
@@ -201,6 +336,8 @@ public class PlayerController : MonoBehaviour
             {
                 visual.PlayResult(true);
                 UI_Canvas.instance.ShowLevelPass();
+                int levelCompletionReward = 50;
+                CoinManager.instance.AddLevelCompletionCoins(levelCompletionReward);
             }
             else
             {
@@ -209,11 +346,15 @@ public class PlayerController : MonoBehaviour
                 int missed = RingPointManager.instance.GetTotal() -
                              RingPointManager.instance.GetCurrent();
 
+                SoundManager.instance.StopSound("Flying");
+                SoundManager.instance.PlaySound("Level_Fail");
                 LandingTrigger.instance.missedCP.gameObject.SetActive(true);
                 LandingTrigger.instance.missedCP.text =
                     " You Missed " + missed + " Rings! ";
 
                 UI_Canvas.instance.ShowLevelFail();
+                LandingTrigger.instance.missedCP.gameObject.SetActive(false);
+
             }
         }
     }

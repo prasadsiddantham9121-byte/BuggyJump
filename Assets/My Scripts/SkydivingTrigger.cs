@@ -21,6 +21,8 @@ public class SkydivingTrigger : MonoBehaviour
 
             //int index = 1;
 
+            StartCoroutine(UI_Canvas.instance.DelayedTutorial(2.5f));
+
             other.GetComponent<PlayerVisualController>().SetJet();
             
 
@@ -30,17 +32,21 @@ public class SkydivingTrigger : MonoBehaviour
 
             if(other.GetComponent<PlayerVisualController>().jet.hasOpenClose)
             {
+                SoundManager.instance.StopSound("Helicopter");
+                SoundManager.instance.PlaySound("Jet_Starting");
                 other.GetComponent<PlayerVisualController>().JetOpenAnimation();
+                SoundManager.instance.PlaySound("Flying");
             }
 
             other.GetComponent<PlayerVisualController>().JetOpenAnimation();
+            SoundManager.instance.PlaySound("Flying");
             other.GetComponent<PlayerController>().ParticlesEnable();
 
-            StartCoroutine(screenFader.FadeIn(2.3f));
+            StartCoroutine(screenFader.FadeIn(1f));
 
         
             UI_Canvas.instance.inGameUI.SetActive(true);
-            UI_Canvas.instance.SetCutsceneState(false);
+            
 
             StartCoroutine(DelayToDisableObject());
         }
@@ -48,7 +54,11 @@ public class SkydivingTrigger : MonoBehaviour
 
     IEnumerator DelayToDisableObject()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
         gameObject.SetActive(false);
+        SoundManager.instance.StopSound("Helicopter");
+        UI_Canvas.instance.SetCutsceneState(false);
+        SoundManager.instance.PlaySound("Flying");
+
     }
 }

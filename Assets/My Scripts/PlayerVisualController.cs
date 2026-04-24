@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Script;
 
 public class PlayerVisualController : MonoBehaviour
 {
@@ -189,9 +190,17 @@ public class PlayerVisualController : MonoBehaviour
     public void ActivateRagdoll()
     {
         if (isRagdollActive || isLevelFinished) return;
+
+        UI_Canvas.instance.isGameOver = true;
+
+        if (!AndroidTV.IsAndroidOrFireTv())
+        {
+            UI_Canvas.instance.pauseButton.SetActive(false);
+        }
+
         isRagdollActive = true;
 
-       
+
         playerAnimator.enabled = false;
 
         

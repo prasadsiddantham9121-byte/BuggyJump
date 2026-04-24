@@ -132,14 +132,17 @@ public class RingPointManager : MonoBehaviour
         if (arrow == null || player == null || currentTarget == null)
             return;
 
-        Vector3 direction = currentTarget.position - player.position;
-        direction.y = 0;
+        // Convert target position into player's local space
+        Vector3 direction = player.InverseTransformPoint(currentTarget.position);
 
-        if (direction != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            arrow.rotation = Quaternion.Slerp(arrow.rotation, targetRotation, Time.deltaTime * 5f);
-        }
+        // Calculate angle
+        float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+
+        // Optional offset (depends on your arrow model orientation)
+        angle += 180;
+
+        // Apply rotation (LOCAL)
+        arrow.localEulerAngles = new Vector3(0, 180, angle);
     }
 
     void FindPlayer()

@@ -19,7 +19,7 @@ public class PlaneMovement : MonoBehaviour
 
     void Start()
     {
-        playerVisualController = GetComponentInChildren<PlayerVisualController>();
+        //playerVisualController = GetComponentInChildren<PlayerVisualController>();
 
         // 👇 Start coroutine delay
         StartCoroutine(JumpWithDelay());
@@ -52,6 +52,12 @@ public class PlaneMovement : MonoBehaviour
     void JumpPlayer()
     {
         if (jumped) return;
+
+        if (playerVisualController == null)
+        {
+            Debug.LogError("PlayerVisualController is NULL!");
+            return;
+        }
 
         Debug.Log("JUMP TRIGGERED");
 

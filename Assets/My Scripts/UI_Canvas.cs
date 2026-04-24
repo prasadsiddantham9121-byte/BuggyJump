@@ -12,19 +12,26 @@ public class UI_Canvas : MonoBehaviour
     public GameObject levelPassPanel;
     public GameObject levelFailPanel;
     public GameObject pausePanel;
-    public GameObject startPanel;
+    //public GameObject startPanel;
     public GameObject inGameUI;
     private ScreenFader screenFader;
     private bool isCutscenePlaying = false;
+    public static bool isfromgame;
+
+    public Joystick joystick;
+
+    public bool isTutorial = false;
+    public bool isGameOver = false;
+    public bool isGameStarted = false;
 
     
-    //=== dummy ==================
+    //=== Timer ==================
     [Header("Timer")]
     [SerializeField] private TextMeshProUGUI timerText;
 
     [Header("In-Game Sound")]
-    public AudioSource ingameAudio;
-
+    public AudioSource audioSource;
+    public AudioClip audioClip;
     //===================================== Warning Text =============================================
 
     [Header("Warning UI")]
@@ -34,20 +41,58 @@ public class UI_Canvas : MonoBehaviour
 
     public float blinkSpeed = 2f;
 
+    public GameObject[] levels;
+    private int currentLevelIndex = 0;
+
+    //================================================= Tutorial References ==================
+    public GameObject tvTutorial;
+    public GameObject tabTutorial;
+    public GameObject pauseButton;
+
+
     private Coroutine blinkCoroutine;
 
     private void Awake()
     {
-        instance = this;
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
 
         screenFader = FindObjectOfType<ScreenFader>();
+
+        isfromgame = true;
+
+        if (!AndroidTV.IsAndroidOrFireTv())
+        {
+            pauseButton.SetActive(false);
+        }
     }
 
     void Start()
     {
-        Time.timeScale = 0f;
-        startPanel.SetActive(true);
+        //Time.timeScale = 0f;
+        //startPanel.SetActive(true);
         inGameUI.SetActive(false);
+        StartCoroutine(screenFader.FadeIn());
+        SetCutsceneState(true);
+        SoundManager.instance.PlaySound("Helicopter");
+
+
+        InGameAudioStart();
+
+        // ✅ Read selected level first
+        currentLevelIndex = PlayerPrefs.GetInt("SelectedLevel", 0);
+
+        // Safety clamp
+        currentLevelIndex = Mathf.Clamp(currentLevelIndex, 0, levels.Length - 1);
+
+        // ✅ Activate correct level
+        for (int i = 0; i < levels.Length; i++)
+        {
+            if (levels[i] != null)
+                levels[i].SetActive(i == currentLevelIndex);
+        }
     }
 
     void Update()
@@ -99,17 +144,33 @@ public class UI_Canvas : MonoBehaviour
 
     //==================================================== UI Buttons =================================================================
 
-    public void StartButton()
+  
+
+    public void LevelPassHomeButton()
     {
-        startPanel.SetActive(false);
-        StartCoroutine(screenFader.FadeIn());
+        int currentLevel = PlayerPrefs.GetInt("SelectedLevel", 0);
+
+        int unlocked = PlayerPrefs.GetInt("levelsUnlocked", 1);
+
+        // Mark level completed
+        PlayerPrefs.SetInt("LevelCompleted_" + currentLevel, 1);
+
+        if (currentLevel + 1 >= unlocked)
+        {
+            PlayerPrefs.SetInt("levelsUnlocked", currentLevel + 2);
+        }
+
+        PlayerPrefs.SetInt("SelectedLevel", currentLevel + 1);
+        // Move highlighter to next level
+        PlayerPrefs.SetInt("currentHighlighter", currentLevel + 1);
+        PlayerPrefs.Save();
+
         Time.timeScale = 1f;
-        SetCutsceneState(true);
+        SceneManager.LoadScene(0);
     }
 
-    public void HomeButton()
+    public void LevelFailHomeButton()
     {
-        
         Time.timeScale = 1f;
         SceneManager.LoadScene(0);
     }
@@ -117,10 +178,10 @@ public class UI_Canvas : MonoBehaviour
     public void PauseButtonHandler()
     {
         if (isCutscenePlaying) return;
-
+        if (isGameOver) return;
         if (levelPassPanel.activeInHierarchy) return;
         if (levelFailPanel.activeInHierarchy) return;
-        if (startPanel.activeInHierarchy) return;
+        //if (startPanel.activeInHierarchy) return;
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -181,6 +242,64 @@ public class UI_Canvas : MonoBehaviour
         isCutscenePlaying = state;
     }
 
-  
+    //============================================= In Game Audio Handling ======================================================
 
+    public void InGameAudioStop()
+    {
+        audioSource.clip = audioClip;
+        audioSource.Stop();
+    }
+
+    public void InGameAudioStart()
+    {
+
+        audioSource.clip = audioClip;
+        audioSource.Play();
+
+    }
+
+    //===================================================== Tutorial Part ===================================================
+    public IEnumerator ShowFirstTimeTutorial()
+    {
+       
+        if (!AndroidTV.IsAndroidOrFireTv())
+        {
+            pauseButton.SetActive(true);
+        }
+
+        int level = PlayerPrefs.GetInt("SelectedLevel", 0);
+
+        if (level == 0 && PlayerPrefs.GetInt("Level1TutorialShown", 0) == 0)
+        {
+            isTutorial = true;
+
+            if (AndroidTV.IsAndroidOrFireTv())
+                tvTutorial.SetActive(true);
+            else
+                tabTutorial.SetActive(true);
+
+            Time.timeScale = 0;
+
+            yield return new WaitForSecondsRealtime(3f);
+
+            tvTutorial.SetActive(false);
+            tabTutorial.SetActive(false);
+
+            isTutorial = false;
+
+            PlayerPrefs.SetInt("Level1TutorialShown", 1);
+            PlayerPrefs.Save();
+        }
+
+        Time.timeScale = 1f;
+        isGameStarted = true;
+
+    }
+
+    public IEnumerator DelayedTutorial(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        StartCoroutine(ShowFirstTimeTutorial());
+    }
 }

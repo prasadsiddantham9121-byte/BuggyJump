@@ -6,6 +6,16 @@ public class Ring : MonoBehaviour
 
     private Collider ringCollider;
 
+    private void OnEnable()
+    {
+        collected = false;
+
+        if (ringCollider == null)
+            ringCollider = GetComponent<Collider>();
+
+        ringCollider.enabled = true;
+    }
+
     private void Start()
     {
         ringCollider = GetComponent<Collider>();
@@ -15,6 +25,8 @@ public class Ring : MonoBehaviour
     {
         if (other.CompareTag("Player") && !collected)
         {
+
+            SoundManager.instance.PlaySound("Collectable");
             collected = true;
 
             ringCollider.enabled = false;

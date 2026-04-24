@@ -8,6 +8,7 @@ public class Booster : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            SoundManager.instance.PlaySound("Collectable");
             other.GetComponent<PlayerController>().ActivateBoost();
             Destroy(gameObject);
         }

@@ -11,11 +11,20 @@ public class ButtonHighlighter : MonoBehaviour
     [SerializeField] private float scaleAmount = 1.1f;
     public GameObject defaultButton;
     public GameObject singleplaybtn;
+
+    [SerializeField] Button[] levels;
+    [SerializeField] bool levelSelection;
+
     private void Awake()
     {
         if (!AndroidTV.IsAndroidOrFireTv())
         {
             //this.gameObject.GetComponent<ButtonHighlighter>().enabled = false;
+        }
+
+        if (!PlayerPrefs.HasKey("currentHighlighter"))
+        {
+            PlayerPrefs.SetInt("currentHighlighter", 0);
         }
     }
     void Start()
@@ -23,6 +32,11 @@ public class ButtonHighlighter : MonoBehaviour
         if (defaultButton != null)
         {
             EventSystem.current.SetSelectedGameObject(defaultButton);
+        }
+
+        if (levelSelection)
+        {
+            EventSystem.current.SetSelectedGameObject(levels[PlayerPrefs.GetInt("currentHighlighter")].gameObject);
         }
     }
     private void OnEnable()
@@ -48,7 +62,15 @@ public class ButtonHighlighter : MonoBehaviour
             UnHighlightButton(previousButton);
         }
         previousButton = selectedAsButton;
+
+
+        MenuScript.instance.SelectedObj = selectedAsButton.gameObject;
+        if (levelSelection)
+        {
+            MenuScript.instance.Content_move();
+        }
     }
+
     public static GameObject FindGameObjectInChildWithTag(GameObject parent, string tag)
     {
         Transform t = parent.transform;
@@ -84,5 +106,19 @@ public class ButtonHighlighter : MonoBehaviour
         {
             butt.GetComponent<Outline>().enabled = false;
         }
+    }
+    public void setHigleter(GameObject defaultButton)
+    {
+        EventSystem.current.SetSelectedGameObject(defaultButton);
+    }
+    public void SetDefaultButton(GameObject _defaultButton)
+    {
+        defaultButton = _defaultButton;
+    }
+
+    //default highlight for levels selection
+    public void DefaultHighlighter_Levels()
+    {
+        EventSystem.current.SetSelectedGameObject(levels[PlayerPrefs.GetInt("currentHighlighter")].gameObject);
     }
 }

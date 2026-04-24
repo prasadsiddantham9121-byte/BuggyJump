@@ -11,6 +11,8 @@ public class CheckPointTrigger : MonoBehaviour
         if (!other.CompareTag("Player") || isCollected)
             return;
 
+        SoundManager.instance.PlaySound("Collectable");
+
         isCollected = true;
 
         CheckPointManager.instance.CollectCheckpoint(gameObject);

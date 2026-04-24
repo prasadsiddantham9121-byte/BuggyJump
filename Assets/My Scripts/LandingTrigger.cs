@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 using System.Collections;
+using Script;
 
 public class LandingTrigger : MonoBehaviour
 {
@@ -31,45 +32,47 @@ public class LandingTrigger : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
+        UI_Canvas.instance.isGameOver = true;
+        if (!AndroidTV.IsAndroidOrFireTv())
+        {
+            UI_Canvas.instance.pauseButton.SetActive(false);
+        }
+
         hasTriggered = true;
         GetComponent<Collider>().enabled = false;
 
         Debug.Log("Player Landed Here");
-
+        UI_Canvas.instance.InGameAudioStop();
+        SoundManager.instance.StopSound("Flying");
+        SoundManager.instance.PlaySound("Jet_Closing");
+        SoundManager.instance.PlaySound("Level_Pass");
         PlayerController controller = other.GetComponent<PlayerController>();
         PlayerVisualController visual = other.GetComponent<PlayerVisualController>();
 
         if (visual != null)
         {
-            visual.OnLevelComplete(); // 🔥 THIS LINE IS REQUIRED
+            visual.OnLevelComplete();
         }
 
-        // ✅ Cameras
+       
         GameObject landingCamera = visual.landingCamera;
         GameObject mainCamera = visual.mainCamera;
 
-        // ✅ Stop jet & controls
+        
         visual.JetCloseAnimation();
-        visual.StopJetAnimation();
+        //visual.StopJetAnimation();
 
         controller.DisableControls();
         controller.ParticlesDisable();
 
-        // ✅ Switch cameras
+       
         if (mainCamera != null) mainCamera.SetActive(false);
         if (landingCamera != null) landingCamera.SetActive(true);
 
-        // ✅ Landing animation
-        
-
-        // ✅ Stop timer
+       
         TimeManager.instance.StopTimer();
 
-        //StartCoroutine(screenFader.FadeOut());
-
-        //visual.TriggerLandingAnimation();
-
-        //controller.DoLandingToResultsPos();
+       
 
         StartCoroutine(HandleLandingSequence(controller, visual));
 
@@ -77,24 +80,25 @@ public class LandingTrigger : MonoBehaviour
         {
             CheckPointManager.instance.DiActivateLandingEffect();
         }
+
+        if (RingPointManager.instance != null)
+        {
+            RingPointManager.instance.RingOffLandingEffect();
+        }
         Debug.Log("Checkpoint instance: " + CheckPointManager.instance);
         Debug.Log("Ring instance: " + RingPointManager.instance);
     }
 
     IEnumerator HandleLandingSequence(PlayerController controller, PlayerVisualController visual)
     {
-        //StopAllCoroutines();
-
-        // Fade out first
-        yield return StartCoroutine(screenFader.FadeOut());
        
+        yield return StartCoroutine(screenFader.FadeOut());
 
-        // Then play landing animation
+
+        visual.StopJetAnimation();
         visual.TriggerLandingAnimation();
        
-        // Small delay if needed
-        //yield return new WaitForSeconds(0.2f);
-
+      
         controller.DoLandingToResultsPos();
 
         yield return StartCoroutine(screenFader.FadeIn(0.8f));
